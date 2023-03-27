@@ -1,10 +1,10 @@
 <script lang="ts">
     import { page } from '$app/stores'
-    import { Form } from "$components";
-    import { API_URL, FURNACE_FIELDS } from "$lib/consts";
-    import type { IFurnace } from '$lib/types';
+    import { Form } from '$components'
+    import { API_URL, FURNACE_FIELDS } from '$lib/consts'
+    import type { IFurnace } from '$lib/types'
 
-    let defaultState: IFurnace = $page.data.default;
+    let defaultState: IFurnace = $page.data.default
 </script>
 
 <div class="container">

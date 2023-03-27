@@ -1,6 +1,6 @@
 export const API_URL = 'https://localhost:44349/api'
 
-export const FURNACE_FIELDS = 
+export const FURNACE_FIELDS =
 [
     { name: 'numberOfFurnace', description: 'Номер доменной печи' },
     { name: 'usefulVolumeOfFurnace', description: 'Полезный объем печи, м3' },

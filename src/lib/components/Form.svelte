@@ -2,13 +2,13 @@
     import dayjs from 'dayjs'
     import { fade } from 'svelte/transition'
     import { redirect } from '$lib/utils.js'
-    import type { IFullResult } from '$lib/types';
-    import { RESULT_FIELDS } from '$lib/consts';
+    import type { IFullResult } from '$lib/types'
+    import { RESULT_FIELDS } from '$lib/consts'
 
     export let path: string
     export let redirectTo = ''
     export let autocomplete: 'on' | 'off' = 'on'
-    export let content: 'application/json' | 'multipart/form-data' = 'application/json';
+    export let content: 'application/json' | 'multipart/form-data' = 'application/json'
 
     let fullResults = false
     let result: IFullResult = undefined
@@ -102,8 +102,8 @@
                         {/if}
                     {:else}
                         <tr 
-                            class="{field.name == 'indexOfTheBottomOfTheFurnace' || 
-                            field.name == 'indexOfTheFurnaceTop' || 
+                            class="{field.name == 'indexOfTheBottomOfTheFurnace' ||
+                            field.name == 'indexOfTheFurnaceTop' ||
                             field.name == 'theoreticalBurningTemperatureOfCarbonCoke' ? 'table-primary' : ''}" 
                             transition:fade
                         >

@@ -57,9 +57,9 @@ export function deleteCookie(name) {
     document.cookie = name+'=; Max-Age=-99999999;'
 }
 
-export const truncate = (str: string, n: number = 18) => {
-    let split = str.split('.');
-    let extension = split[1];
+export const truncate = (str: string, n = 18) => {
+    const split = str.split('.')
+    const extension = split[1]
 
-    return (str.length > n) ? str.slice(0, n-1) + '..' + `.${extension}` : str;
+    return (str.length > n) ? str.slice(0, n-1) + '..' + `.${extension}` : str
 }
