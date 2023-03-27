@@ -7,10 +7,13 @@ export async function load() {
     try {
         // TODO: THIS IS NOT SAFE !!!
         const httpsAgent = new https.Agent({ rejectUnauthorized: false })
-        const response = await axios.get(`${API_URL}/furnace/default`, { httpsAgent })
+        const defaultResponse = await axios.get(`${API_URL}/furnace/default`, { httpsAgent })
+
+        const variantsResponse = await axios.get(`${API_URL}/furnace`, { httpsAgent })
 
         return {
-            default: response.data
+            default: defaultResponse.data,
+            variants: variantsResponse.data
         }
     } catch(error) {
         // TODO: Add logging

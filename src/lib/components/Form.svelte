@@ -4,6 +4,9 @@
     import { redirect } from '$lib/utils.js'
     import type { IFullResult } from '$lib/types'
     import { RESULT_FIELDS } from '$lib/consts'
+    import { createEventDispatcher } from 'svelte';
+
+    const dispatch = createEventDispatcher();
 
     export let path: string
     export let redirectTo = ''
@@ -19,12 +22,14 @@
     const handleSubmit = async (e) => {
         const ACTION_URL = e.target.action
         const formData = new FormData(e.target)
-        const data = {}
+        const data:any = {}
         formData.forEach((value, key) => data[key] = value)
+
+        let CURRENT_URL = data.save == "true" ? ACTION_URL + '?save=true' : ACTION_URL
 
         try {
             loaderShow = true
-            let res = await fetch(ACTION_URL, {
+            let res = await fetch(CURRENT_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': content,
@@ -37,6 +42,7 @@
             if (res.ok) {
                 loaderShow = false
                 errorText = ''
+                dispatch('success')
 
                 // e.target.reset()
                 if (redirectTo) redirect(redirectTo)
@@ -62,11 +68,12 @@
         <p transition:fade>Произошла ошибка при выполнении запроса<br/>{errorText}</p>
     {/if}
 </form>
-<!-- {#if loaderShow}
-    <div class="awaiter-wrapper" transition:fade>
-        <Awaiter />
+{#if loaderShow}
+    <div class="spinner-border mt-4" role="status" transition:fade>
+        <span class="visually-hidden">Loading...</span>
     </div>
-{/if} -->
+{/if}
+<!-- TODO: Вынести отсюда в отдельный компонент -->
 {#if result}
     <div class="result" transition:fade>
         <!-- <p class="h5 mt-4 mb-3">Сокращенная форма результатов расчета:</p>
@@ -87,6 +94,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- TODO: Убрать дублирующийся код -->
                     {#each RESULT_FIELDS as field}
                     {#if !fullResults}
                         {#if field.name == 'indexOfTheBottomOfTheFurnace' || field.name == 'indexOfTheFurnaceTop' || field.name == 'theoreticalBurningTemperatureOfCarbonCoke' || field.name == 'resultDate'}
@@ -96,7 +104,11 @@
                                     <td><mark>{dayjs(result.result[`${field.name}`]).format('DD.MM.YYYY HH:mm:ss')}</mark></td>
                                 {:else}
                                     <td>{field.description}</td>
-                                    <td><mark>{Math.round(result.result[`${field.name}`] * 100) / 100}</mark></td>
+                                    {#if field.name == 'theoreticalBurningTemperatureOfCarbonCoke'}
+                                        <td><mark>{Math.round(result.result[`${field.name}`])}</mark></td>
+                                    {:else}
+                                        <td><mark>{Math.round(result.result[`${field.name}`] * 100) / 100}</mark></td>
+                                    {/if}
                                 {/if}
                             </tr>
                         {/if}
@@ -112,7 +124,11 @@
                                 <td><mark>{dayjs(result.result[`${field.name}`]).format('DD.MM.YYYY HH:mm:ss')}</mark></td>
                             {:else}
                                 <td>{field.description}</td>
-                                <td><mark>{Math.round(result.result[`${field.name}`] * 100) / 100}</mark></td>
+                                {#if field.name == 'theoreticalBurningTemperatureOfCarbonCoke'}
+                                    <td><mark>{Math.round(result.result[`${field.name}`])}</mark></td>
+                                {:else}
+                                    <td><mark>{Math.round(result.result[`${field.name}`] * 100) / 100}</mark></td>
+                                {/if}
                             {/if}
                         </tr>
                     {/if}

@@ -52,6 +52,7 @@ export interface IFurnace {
     usefulHeightOfFurnace: number
     usefulVolumeOfFurnace: number
     volatileContentInCoke: number
+    saveDate: number
 }
 
 export interface IResult {
