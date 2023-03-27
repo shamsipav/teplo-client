@@ -8,15 +8,26 @@
 </script>
 
 <div class="container">
-    <p class="mb-3">Форма для тестирования базового периода</p>
+    <p class="h3 mb-3">Расчет базового периода</p>
     <Form path="{API_URL}/base">
-        {#each FURNACE_FIELDS as field}
-            <div class="mb-3">
-                <label class="form-label">{field.description}</label>
-                <input type="text" class="form-control" name={field.name} value={defaultState[`${field.name}`]} autocomplete="off" required>
-                <!-- <div class="form-text">We'll never share your email with anyone else.</div> -->
-            </div>
-        {/each}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Параметр</th>
+                    <th scope="col">Значение</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#each FURNACE_FIELDS as field}
+                    <tr>
+                        <td>{field.description}</td>
+                        <td>
+                            <input type="text" class="form-control" name={field.name} value={defaultState[`${field.name}`]} autocomplete="off" required>
+                        </td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
         <button type="submit" class="btn btn-primary">Отправить</button>
     </Form>
 </div>

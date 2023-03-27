@@ -50,18 +50,18 @@ export const FURNACE_FIELDS =
     { name: 'heatCapacityOfCoke', description: 'Теплоёмкость кокса, кДж/(кг * С)' },
     { name: 'acceptedTemperatureOfBackupZone', description: 'Принятое значение температуры "резервной зоны", С' },
     { name: 'proportionOfHeatLossesOfLowerPart', description: 'Доля тепловых потерь через нижнюю часть печи, доли ед.' },
-    { name: 'averageSizeOfPieceCharge', description: 'Средний размер куска шихты, м' }
-    { name: 'HeatOfBurningOfNaturalGasOnFarms', description: 'Теплота горения природного газа на фурмах, кДж/м3' }
-    { name: 'HeatOfIncompleteBurningCarbonOfCoke', description: 'Теплота неполного горения углерода кокса, кДж/кг' }
-    { name: 'TemperatureOfCokeThatCameToTuyeres', description: 'Температура кокса, пришедшего к фурмам, °C' }
+    { name: 'averageSizeOfPieceCharge', description: 'Средний размер куска шихты, м' },
+    { name: 'heatOfBurningOfNaturalGasOnFarms', description: 'Теплота горения природного газа на фурмах, кДж/м3' },
+    { name: 'heatOfIncompleteBurningCarbonOfCoke', description: 'Теплота неполного горения углерода кокса, кДж/кг' },
+    { name: 'temperatureOfCokeThatCameToTuyeres', description: 'Температура кокса, пришедшего к фурмам, °C' }
 ]
 
 export const RESULT_FIELDS =
 [
     { name: 'averageSectionalAreaOfFurnaceShaft', description: 'Средняя площадь сечения шахты печи, м2' },
     { name: 'gasFiltrationFurnaceShaftSpeed', description: 'Скорость фильтрации газа через шахту печи, м/с' },
-    { name: 'eatCapacityOfDiatomicGasesAtBlastTemperature', description: 'Теплоемкость двуатомных газов при температуре дутья, кДж/(м3*С)' },
-    { name: 'heatCapacityOfWaterVaporAtBlastTemperature', description: 'Теплоемкость паров воды при температур дутья, кДж/(м3*С)' },
+    { name: 'heatCapacityOfDiatomicGasesAtBlastTemperature', description: 'Теплоемкость двуатомных газов при температуре дутья, кДж/(м3*С)' },
+    { name: 'heatCapacityOfWaterVaporAtBlastTemperature', description: 'Теплоемкость паров воды при температуре дутья, кДж/(м3*С)' },
     { name: 'degreeOfDirectRecovery', description: 'Степень прямого восстановления, доли ед.' },
     { name: 'amountOfCokeCarbonCameIntoFurnace', description: 'Количество пришедшего в печь углерода кокса, кг/т чугуна' },
     { name: 'carbonConsumptionForIronReduction', description: 'Расход углерода на прямое восстановление железа, кг/т чугуна' },
@@ -85,7 +85,7 @@ export const RESULT_FIELDS =
     { name: 'heatLossesToEnvironmentThrough', description: 'Тепловые потери в окружающюю среду через фурменный пояс, распар и заплечики, кДж/т чугуна' },
     { name: 'calculatedGeneralizingParameter', description: 'Расчетный обобщающий параметр (Qp), [-]' },
     { name: 'optimalHeatConsumptionForSmeltingOneTonOfCastIron', description: 'Оптимальные затраты тепла на выплавку 1 тонны чугуна, кДж/т чугуна' },
-    { name: 'indexOfTheBottomOfTheFurnace', description: 'ИНДЕКС НИЗА ПЕЧИ' },
+    { name: 'indexOfTheBottomOfTheFurnace', description: 'Индекс низа' },
     { name: 'valueOfHeatLossesInLowerZoneOfFurnace', description: 'Значение доли тепловых потерь в нижней зоне печи при условии i=1,0' },
     { name: 'trueHeatCapacityOfGrateGas', description: 'Истинная теплоемкость колошникового газа, кДж/(м3*С)' },
     { name: 'thermalConductivityOfGrateGas', description: 'Теплопроводность колошникового газа, Вт/(м*С)' },
