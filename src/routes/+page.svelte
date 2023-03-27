@@ -4,7 +4,7 @@
     import { Form } from '$components'
     import { API_URL, FURNACE_FIELDS } from '$lib/consts'
     import type { IFurnace } from '$lib/types'
-    import axios from 'axios';
+    import axios from 'axios'
 
     let defaultState = $page.data.default
     let variants: IFurnace[] = $page.data.variants

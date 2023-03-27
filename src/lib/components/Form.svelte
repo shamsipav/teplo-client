@@ -4,9 +4,9 @@
     import { redirect } from '$lib/utils.js'
     import type { IFullResult } from '$lib/types'
     import { RESULT_FIELDS } from '$lib/consts'
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher } from 'svelte'
 
-    const dispatch = createEventDispatcher();
+    const dispatch = createEventDispatcher()
 
     export let path: string
     export let redirectTo = ''
@@ -25,7 +25,7 @@
         const data:any = {}
         formData.forEach((value, key) => data[key] = value)
 
-        let CURRENT_URL = data.save == "true" ? ACTION_URL + '?save=true' : ACTION_URL
+        let CURRENT_URL = data.save == 'true' ? ACTION_URL + '?save=true' : ACTION_URL
 
         try {
             loaderShow = true
