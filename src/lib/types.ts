@@ -1,0 +1,115 @@
+export interface PopupComponent {
+    open: () => void,
+    close: () => void
+}
+
+export interface IFurnace {
+    acceptedTemperatureOfBackupZone: number
+    ashContentInCoke: number
+    averageSizeOfPieceCharge: number
+    blastConsumption: number
+    blastHumidity: number
+    blastPressure: number
+    blastTemperature: number
+    chugun_C: number
+    chugun_MN: number
+    chugun_P: number
+    chugun_S: number
+    chugun_SI: number
+    coloshGasPressure: number
+    coloshGasTemperature: number
+    coloshGas_CO: number
+    coloshGas_CO2: number
+    coloshGas_H2: number
+    dailyСapacityOfFurnace: number
+    diameterOfColoshnik: number
+    diameterOfHorn: number
+    diameterOfRaspar: number
+    establishedLevelOfEmbankment: number
+    heatCapacityOfAgglomerate: number
+    heatCapacityOfCoke: number
+    heatCapacityOfPellets: number
+    heightOfColoshnik: number
+    heightOfHorn: number
+    heightOfRaspar: number
+    heightOfShaft: number
+    heightOfTuyeres: number
+    heightOfZaplechiks: number
+    heatOfBurningOfNaturalGasOnFarms: number
+    heatOfIncompleteBurningCarbonOfCoke: number
+    temperatureOfCokeThatCameToTuyeres: number
+    id: number
+    naturalGasConsumption: number
+    numberOfFurnace: number
+    numberOfTuyeres: number
+    oxygenContentInBlast: number
+    proportionOfHeatLossesOfLowerPart: number
+    shareOfPelletsInCharge: number
+    specificConsumptionOfCoke: number
+    specificConsumptionOfZRM: number
+    specificSlagYield: number
+    sulfurContentInCoke: number
+    usefulHeightOfFurnace: number
+    usefulVolumeOfFurnace: number
+    volatileContentInCoke: number
+}
+
+export interface IResult {
+    amountOfCarbonOfCokeBurningAtTuyeres: number
+    amountOfCokeCarbonCameIntoFurnace: number
+    amountOfGorenjeGasesDuringCombustionOneKgOfCarbonCoke: number
+    amountOfHeatEnteringLlowerZoneOfFurnaceWithCharge: number
+    amountOfHeatFromGorenjeCoke: number
+    averageHeatCapacityOfCharge: number
+    averageSectionalAreaOfFurnaceShaft: number
+    blastConsumptionForBurningOneMeterCoubOfNaturalGas: number
+    calculatedGeneralizingParameter: number
+    carbonConsumptionForIronReduction: number
+    carbonConsumptionForMethaneFormation: number
+    carbonСonsumptionForCastChugunReduction: number
+    chargeFlowRatePassingThroughFurnaceShaft: number
+    consumptionOfNaturalGasPerOneKgOfCarbonOfCoke: number
+    consumptionOfNaturalGasPerOneKgOfOfCoke: number
+    degreeOfDirectRecovery: number
+    furnaceGasOutput: number
+    gasFiltrationFurnaceShaftSpeed: number
+    heatCapacityOfDiatomicGasesAtBlastTemperature: number
+    heatCapacityOfGasAtTemperatureOfReserveZone: number
+    heatCapacityOfWaterVaporAtBlastTemperature: number
+    heatCostsForDirectIronRecovery: number
+    heatLossesToEnvironmentThrough: number
+    heatOfHeatedBlast: number
+    heatOfNaturalGasConversion: number
+    indexOfTheBottomOfTheFurnace: number
+    indexOfTheFurnaceTop: number
+    intermediateDenominator: number
+    intermediateExhibitor: number
+    intermediateNumerator: number
+    intermediateRatio: number
+    kinematicViscosityOfGrateGas: number
+    numberOfFurnaceGasesAtConversionOfOneMeterCoubOfGas: number
+    optimalHeatConsumptionForSmeltingOneTonOfCastIron: number
+    resultDate: number
+    specificBlastConsumption: number
+    thermalConductivityOfGrateGas: number
+    trueHeatCapacityOfGrateGas: number
+    usefulArrivalOfHeatInLowerZoneOfTheFurnace: number
+    valueOfHeatLossesInLowerZoneOfFurnace: number
+    volumetricHeatTransferCoefficient: number
+    blastConsumptionRequiredForBurningOneKgOfCarbonCoke: number
+    blastConsumptionForConversionOfOneMeterCoubOfNaturalGas: number
+    outputOfTheTuyereGasBurningAtTheTuyeres: number
+    outputOfTuyereGasOfNaturalGasDuringСonversion: number
+    heatCapacityOfDiatomicGasesAtHotBlastTemperature: number
+    heatCapacityOfWaterVaporAtHotBlastTemperature: number
+    heatContentOfHotBlast: number
+    heatContentOfCarbonOfCokeToTuyeres: number
+    naturalGasConsumptionPerOneKgOfCoke: number
+    heatContentOfFurnaceGases: number
+    theoreticalBurningTemperatureOfCarbonCoke: number
+}
+
+export interface IFullResult {
+    input: IFurnace
+    result: IResult
+}
