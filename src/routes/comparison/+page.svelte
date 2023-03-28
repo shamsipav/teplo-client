@@ -5,7 +5,7 @@
     import type { IFurnace, IUnionFullResult } from '$lib/types'
     import { API_URL, RESULT_FIELDS } from '$lib/consts'
     import { fade } from 'svelte/transition'
-    import { error } from '@sveltejs/kit';
+    import { error } from '@sveltejs/kit'
     
     let variants: IFurnace[] = $page.data.variants
 
