@@ -38,7 +38,7 @@
                 Вариант №{variant.id} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
             </option>
         {/each}
-      </select>
+    </select>
     <Form path="{API_URL}/base" on:success={getVariants}>
         <table class="table">
             <thead>
@@ -60,8 +60,10 @@
         </table>
         <div class="d-flex align-items-center">
             <button type="submit" class="btn btn-primary me-3">Отправить</button>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div class="form-check" on:click={() => saveVariant = !saveVariant}>
-                <input name="save" class="form-check-input" type="checkbox" value={saveVariant} checked={saveVariant} on:change={() => saveVariant = !saveVariant}>
+                <input name="save" class="form-check-input" type="checkbox" value={saveVariant} checked={saveVariant}>
+                <!-- svelte-ignore a11y-label-has-associated-control -->
                 <label class="form-check-label">Сохранить вариант исходных данных</label>
             </div>
         </div>

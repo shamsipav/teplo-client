@@ -114,3 +114,8 @@ export interface IFullResult {
     input: IFurnace
     result: IResult
 }
+
+export interface IUnionFullResult {
+    baseResult: IFullResult
+    comparativeResult: IFullResult
+}

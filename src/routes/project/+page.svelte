@@ -1,1 +1,3 @@
-<p>Project</p>
+<div class="container">
+    <p>Project</p>
+</div>
