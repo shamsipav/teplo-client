@@ -15,6 +15,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/project">Проектный режим</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/reference">Справочник корректировочных коэффициентов</a>
+                </li>
             </ul>
         </div>
     </div>

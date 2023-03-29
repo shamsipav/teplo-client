@@ -25,6 +25,22 @@
         const data:any = {}
         formData.forEach((value, key) => data[key] = value)
 
+        // TODO: Вынести в +page.svelte к справочнику корр. коэффициентов
+        // let referenceObject = undefined
+
+        // if (reference) {
+        //     let cokeFiltered = filter(data, ([key, _]) => key.startsWith('cokeCunsumptionCoefficents'));
+        //     let cokeObject = removeKeyNames(cokeFiltered)
+
+        //     let furnaceFiltered = filter(data, ([key, _]) => key.startsWith('furnanceCapacityCoefficents')); 
+        //     let furnaceObject = removeKeyNames(furnaceFiltered)
+
+        //     referenceObject = {
+        //         cokeCunsumptionCoefficents: cokeObject,
+        //         furnanceCapacityCoefficents: furnaceObject
+        //     }
+        // }
+
         let CURRENT_URL = data.save == 'true' ? ACTION_URL + '?save=true' : ACTION_URL
 
         try {

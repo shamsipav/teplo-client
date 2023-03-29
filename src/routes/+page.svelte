@@ -29,16 +29,18 @@
 
 <div class="container">
     <p class="h3 mb-3">Расчет базового периода</p>
-    <p class="lead mb-2">Вариант исходных данных</p>
-    <select class="form-select mb-3" bind:value={selectedVariant} aria-label="Default select example" on:change={() => getCurrentVariant(selectedVariant)}>
-        <option selected disabled>Вариант исходных данных</option>
-        <option selected>По умолчанию</option>
-        {#each variants as variant}
-            <option value={variant.id}>
-                Вариант №{variant.id} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
-            </option>
-        {/each}
-    </select>
+    {#if variants.length > 0}
+        <p class="lead mb-2">Вариант исходных данных</p>
+        <select class="form-select mb-3" bind:value={selectedVariant} aria-label="Default select example" on:change={() => getCurrentVariant(selectedVariant)}>
+            <option selected disabled>Вариант исходных данных</option>
+            <option selected>По умолчанию</option>
+            {#each variants as variant}
+                <option value={variant.id}>
+                    Вариант №{variant.id} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
+                </option>
+            {/each}
+        </select>
+    {/if}
     <Form path="{API_URL}/base" on:success={getVariants}>
         <table class="table">
             <thead>
@@ -52,7 +54,7 @@
                     <tr>
                         <td>{field.description}</td>
                         <td>
-                            <input type="text" class="form-control" name={field.name} value={defaultState[`${field.name}`]} autocomplete="off" required>
+                            <input type="number" class="form-control" name={field.name} value={defaultState ? defaultState[`${field.name}`] : 0} autocomplete="off" required>
                         </td>
                     </tr>
                 {/each}

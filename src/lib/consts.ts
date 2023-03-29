@@ -111,3 +111,27 @@ export const RESULT_FIELDS =
     { name: 'theoreticalBurningTemperatureOfCarbonCoke', description: 'Теоретическая температура горения углерода кокса, °С' },
     { name: 'resultDate', description: 'Дата проведения расчёта' }
 ]
+
+export const REFERENCE_FIELDS =
+[
+    { name: 'ironMassFractionIncreaseInOreRash', description: 'Увеличение массовой доли железа в рудной сыпи на 1 %' },
+    { name: 'shareCrudeOreReductionCharge', description: 'Снижение доли сырой руды в шихте на 1 %' },
+    { name: 'temperatureIncreaseInRangeOf800to900', description: 'Повышение температуры дутья на 10 градусов в пределах 800 - 900 ºC' },
+    { name: 'temperatureIncreaseInRangeOf901to1000', description: 'Повышение температуры дутья на 10 градусов в пределах 901 - 1000 ºC' },
+    { name: 'temperatureIncreaseInRangeOf1001to1100', description: 'Повышение температуры дутья на 10 градусов в пределах 1001 - 1100 ºC' },
+    { name: 'temperatureIncreaseInRangeOf1101to1200', description: 'Повышение температуры дутья на 10 градусов в пределах 1101 - 1200 ºC' },
+    { name: 'increaseGasPressureUnderGrate', description: 'Повышение давления газа под колошником на 0,1 кг/см2 (0,01 Мпа)' },
+    { name: 'reductionMassFractionOfSiliciumInChugun', description: 'Снижение массовой доли кремния в чугуне на 0,1 %' },
+    { name: 'reductionMassFractionOfSeraInChugun', description: 'Снижение массовой доли серы в чугуне на 0,1 %' },
+    { name: 'increaseMassFractionOfPhosphorusInChugun', description: 'Увеличение массовой доли фосфора в чугуне на 0,1 %' },
+    { name: 'increaseMassFractionOfManganeseInChugun', description: 'Увеличение массовой доли марганца в чугуне на 0,1 %' },
+    { name: 'increaseMassFractionOfTitanInChugun', description: 'Увеличение массовой доли титана в чугуне на 0,1 % (???)' },
+    { name: 'increaseBlastHumidity', description: 'Увеличение влажности дутья на 1 г/м3 (без увеличения температуры дутья)' },
+    { name: 'increaseNaturalGasCunsimption', description: 'Увеличение расхода природного газа на 1 м3/т' },
+    { name: 'outputFromLimestoneCharge', description: 'Вывод из шихты 10 кг/т известняка' },
+    { name: 'increaseVolumeFractionOxygenInBlast', description: 'Увеличение объемной доли кислорода в дутье на 1 %' },
+    { name: 'reductionMassFractionTrifles', description: 'Снижение массовой доли мелочи (фракции 0-5 мм) в рудной сыпи на 1 %' },
+    { name: 'reductionMassFractionAshInCokeInRangeOf11to12Percent', description: 'Уменьшение массовой доли золы в коксе в пределах 11 - 12 %' },
+    { name: 'reductionMassFractionAshInCokeInRangeOf12to13Percent', description: 'Уменьшение массовой доли золы в коксе в пределах 12 - 13 %' },
+    { name: 'reductionMassFractionOfSera', description: 'Уменьшение массовой доли серы в коксе на 0,1 %' }
+]

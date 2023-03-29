@@ -119,3 +119,31 @@ export interface IUnionFullResult {
     baseResult: IFullResult
     comparativeResult: IFullResult
 }
+
+export interface ICoefficients {
+    ironMassFractionIncreaseInOreRash: number
+    shareCrudeOreReductionCharge: number
+    temperatureIncreaseInRangeOf800to900: number
+    temperatureIncreaseInRangeOf901to1000: number
+    temperatureIncreaseInRangeOf1001to1100: number
+    temperatureIncreaseInRangeOf1101to1200: number
+    increaseGasPressureUnderGrate: number
+    reductionMassFractionOfSiliciumInChugun: number
+    reductionMassFractionOfSeraInChugun: number
+    increaseMassFractionOfPhosphorusInChugun: number
+    increaseMassFractionOfManganeseInChugun: number
+    increaseMassFractionOfTitanInChugun: number
+    increaseBlastHumidity: number
+    increaseNaturalGasCunsimption: number
+    outputFromLimestoneCharge: number
+    increaseVolumeFractionOxygenInBlast: number
+    reductionMassFractionTrifles: number
+    reductionMassFractionAshInCokeInRangeOf11to12Percent: number
+    reductionMassFractionAshInCokeInRangeOf12to13Percent: number
+    reductionMassFractionOfSera: number
+}
+
+export interface IReference {
+    cokeCunsumptionCoefficents: ICoefficients
+    furnanceCapacityCoefficents: ICoefficients
+}
