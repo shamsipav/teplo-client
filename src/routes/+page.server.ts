@@ -17,7 +17,7 @@ export async function load() {
         }
     } catch(error) {
         // TODO: Add logging
-        console.log(error)
+        console.log(error.response.data)
         return {
             default: {},
             variants: {}

@@ -85,7 +85,7 @@
                         <td>{field.description}</td>
                         <td>
                             <input 
-                                type="number" 
+                                type="text" 
                                 class="form-control" 
                                 name={'cokeCunsumptionCoefficents.' + field.name} 
                                 value={reference.cokeCunsumptionCoefficents[`${field.name}`]} 
@@ -96,7 +96,7 @@
                         </td>
                         <td>
                             <input 
-                                type="number" 
+                                type="text" 
                                 class="form-control" 
                                 name={'furnanceCapacityCoefficents.' + field.name} 
                                 value={reference.furnanceCapacityCoefficents[`${field.name}`]} 

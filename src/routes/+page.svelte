@@ -54,7 +54,7 @@
                     <tr>
                         <td>{field.description}</td>
                         <td>
-                            <input type="number" class="form-control" name={field.name} value={defaultState ? defaultState[`${field.name}`] : 0} autocomplete="off" required>
+                            <input type="text" class="form-control" name={field.name} value={defaultState ? defaultState[`${field.name}`] : 0} autocomplete="off" required>
                         </td>
                     </tr>
                 {/each}
