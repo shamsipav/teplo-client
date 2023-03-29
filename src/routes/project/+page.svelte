@@ -1,3 +1,147 @@
+<script lang="ts">
+    import dayjs from 'dayjs'
+    import { page } from '$app/stores'
+    import { API_URL, PROJECT_FIELDS, RESULT_FIELDS } from '$lib/consts'
+    import type { IFurnace, IUnionFullResult } from '$lib/types'
+    import { fade } from 'svelte/transition'
+    import axios from 'axios'
+
+    let variants: IFurnace[] = $page.data.variants
+
+    let successMessage: string
+    let errorMessage: string
+
+    let selectedVariant
+
+    let baseVariant: IFurnace
+    let fullResults = false
+
+    const getCurrentVariant = (selectedVariant: number) => {
+        baseVariant = variants.find(x => x.id == selectedVariant)
+    }
+
+    let result: IUnionFullResult
+
+    const getProjectResult = async (e) => {
+        const formData = new FormData(e.target)
+        const data: any = {}
+        formData.forEach((value, key) => data[key] = value)
+
+        try {
+            const response = await axios.post(`${API_URL}/project`, data, { params: { inputDataId: selectedVariant } })
+            result = response.data
+        } catch (error) {
+            successMessage = ''
+            errorMessage = error.response.data
+            console.log(`Не удалось выполнить расчет проектного периода: ${error}`)
+        }
+    }
+</script>
+
 <div class="container">
-    <p>Project</p>
+    <p class="h3 mb-3">Проектный режим</p>
+    {#if variants.length > 0}
+        <p class="lead mb-2">Вариант исходных данных</p>
+        <select class="form-select mb-3" bind:value={selectedVariant} aria-label="Default select example" on:change={() => getCurrentVariant(selectedVariant)}>
+            <option selected disabled>Вариант исходных данных</option>
+            {#each variants as variant}
+                <option value={variant.id}>
+                    Вариант №{variant.id} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
+                </option>
+            {/each}
+        </select>
+    {/if}
+    {#if baseVariant}
+        <form on:submit|preventDefault={getProjectResult} transition:fade>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Параметр</th>
+                        <th scope="col">Значение (базовый)</th>
+                        <th scope="col">Значение (проектный)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each PROJECT_FIELDS as field}
+                        <tr>
+                            <td>{field.description}</td>
+                            <td>
+                                {baseVariant[`${field.name}`]}
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" name={field.name} value={baseVariant[`${field.name}`]} autocomplete="off" required>
+                            </td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+            <div class="d-flex align-items-center">
+                <button type="submit" class="btn btn-warning">Отправить</button>
+            </div>
+        </form>
+        {#if errorMessage}
+            <p class="text-danger mt-3" transition:fade>{errorMessage}</p>
+        {/if}
+    {/if}
+    {#if result}
+        <div class="result mt-4" transition:fade>
+            <p class="h5 mb-3">Результаты сопоставления</p>
+            <button type="button" class="btn btn-light mb-3" on:click={() => fullResults = !fullResults}>
+                {fullResults ? 'Краткая форма' : 'Полная форма'}
+            </button>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Параметр</th>
+                        <th scope="col">Значение (базовый пер.)</th>
+                        <th scope="col">Значение (сравнительный пер.)</th>
+                        <th scope="col">Отклонение</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- TODO: Убрать дублирующийся код -->
+                    {#each RESULT_FIELDS as field}
+                        {#if !fullResults}
+                            {#if field.name == 'indexOfTheBottomOfTheFurnace' || field.name == 'indexOfTheFurnaceTop' || field.name == 'theoreticalBurningTemperatureOfCarbonCoke' || field.name == 'resultDate'}
+                                <tr transition:fade>
+                                    {#if field.name !== 'resultDate'}
+                                        <td>{field.description}</td>
+                                        {#if field.name == 'theoreticalBurningTemperatureOfCarbonCoke'}
+                                            <td><mark>{Math.round(result.baseResult.result[`${field.name}`])}</mark></td>
+                                            <td><mark>{Math.round(result.comparativeResult.result[`${field.name}`])}</mark></td>
+                                            <td>{Math.abs(Math.round(result.comparativeResult.result[`${field.name}`] - result.baseResult.result[`${field.name}`]))}</td>
+                                        {:else}
+                                            <td><mark>{Math.round(result.baseResult.result[`${field.name}`] * 100) / 100}</mark></td>
+                                            <td><mark>{Math.round(result.comparativeResult.result[`${field.name}`] * 100) / 100}</mark></td>
+                                            <td>{Math.abs(Math.round((result.comparativeResult.result[`${field.name}`] - result.baseResult.result[`${field.name}`]) * 100) / 100)}</td>
+                                        {/if}
+                                    {/if}
+                                </tr>
+                            {/if}
+                        {:else}
+                            <tr 
+                                class="{field.name == 'indexOfTheBottomOfTheFurnace' ||
+                                field.name == 'indexOfTheFurnaceTop' ||
+                                field.name == 'theoreticalBurningTemperatureOfCarbonCoke' ? 'table-primary' : ''}" 
+                                transition:fade
+                            >
+                                {#if field.name !== 'resultDate'}
+                                    <td>{field.description}</td>
+                                    {#if field.name == 'theoreticalBurningTemperatureOfCarbonCoke'}
+                                        <td><mark>{Math.round(result.baseResult.result[`${field.name}`])}</mark></td>
+                                        <td><mark>{Math.round(result.comparativeResult.result[`${field.name}`])}</mark></td>
+                                        <td>{Math.abs(Math.round(result.comparativeResult.result[`${field.name}`] - result.baseResult.result[`${field.name}`]))}</td>
+                                    {:else}
+                                        <td><mark>{Math.round(result.baseResult.result[`${field.name}`] * 100) / 100}</mark></td>
+                                        <td><mark>{Math.round(result.comparativeResult.result[`${field.name}`] * 100) / 100}</mark></td>
+                                        <td>{Math.abs(Math.round((result.comparativeResult.result[`${field.name}`] - result.baseResult.result[`${field.name}`]) * 100) / 100)}</td>
+                                    {/if}
+                                {/if}
+                            </tr>
+                        {/if}
+                    {/each}
+                </tbody>
+            </table>
+        </div>
+    {/if}
 </div>

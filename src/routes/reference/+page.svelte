@@ -37,7 +37,7 @@
             const response = await axios.post(`${API_URL}/reference`, referenceObject)
             reference = response.data
             errorMessage = ''
-            successMessage = 'Изменения в справочнике успешно применены'
+            successMessage = 'Изменения успешно применены'
             notifyVisible = true
             loaderShow = false
 
@@ -114,23 +114,33 @@
 
 {#if successMessage}
     {#if notifyVisible}
-        <div class="alert alert-success" role="alert" transition:fade>
-            {successMessage}
+        <div class="toast align-items-center text-bg-warning border-0 show" role="alert" transition:fade>
+            <div class="d-flex">
+                <div class="toast-body">
+                    {successMessage}
+                </div>
+                <button type="button" class="btn-close btn-close-dark me-2 m-auto" on:click={() => notifyVisible = false}></button>
+            </div>
         </div>
     {/if}
 {/if}
 {#if errorMessage}
     {#if notifyVisible}
-    <div class="alert alert-danger" role="alert">
-        {errorMessage}
-    </div>
+        <div class="toast align-items-center text-bg-danger border-0 show" role="alert" transition:fade>
+            <div class="d-flex">
+                <div class="toast-body">
+                    {errorMessage}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" on:click={() => notifyVisible = false}></button>
+            </div>
+        </div>
     {/if}
 {/if}
 
 <style>
-    .alert {
+    .toast {
         position: fixed;
-        bottom: 10px;
+        bottom: 20px;
         right: 20px;
     }
 </style>

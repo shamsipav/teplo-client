@@ -99,7 +99,7 @@
         <p>Дата проведения расчета: <mark>{dayjs(result.result.resultDate).format('DD.MM.YYYY HH:mm:ss')}</mark></p> -->
         <div class="result__full mt-4" transition:fade>
             <p class="h5 mb-3">Результаты расчета</p>
-            <button type="button" class="btn btn-secondary mb-3" on:click={() => fullResults = !fullResults}>
+            <button type="button" class="btn btn-light mb-3" on:click={() => fullResults = !fullResults}>
                 {fullResults ? 'Краткая форма' : 'Полная форма'}
             </button>
             <table class="table">

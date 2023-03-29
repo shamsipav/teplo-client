@@ -70,14 +70,14 @@
             </select>
         </div>
     </div>
-    <button type="button" class="btn btn-primary" on:click={getDifference} disabled={disabled}>Сравнить</button>
+    <button type="button" class="btn btn-warning" on:click={getDifference} disabled={disabled}>Сравнить</button>
     {#if errorMessage}
         <p class="text-danger mt-3" transition:fade>{errorMessage}</p>
     {/if}
     {#if result}
         <div class="result mt-4" transition:fade>
             <p class="h5 mb-3">Результаты сопоставления</p>
-            <button type="button" class="btn btn-secondary mb-3" on:click={() => fullResults = !fullResults}>
+            <button type="button" class="btn btn-light mb-3" on:click={() => fullResults = !fullResults}>
                 {fullResults ? 'Краткая форма' : 'Полная форма'}
             </button>
             <table class="table">

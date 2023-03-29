@@ -135,3 +135,20 @@ export const REFERENCE_FIELDS =
     { name: 'reductionMassFractionAshInCokeInRangeOf12to13Percent', description: 'Уменьшение массовой доли золы в коксе в пределах 12 - 13 %' },
     { name: 'reductionMassFractionOfSera', description: 'Уменьшение массовой доли серы в коксе на 0,1 %' }
 ]
+
+export const PROJECT_FIELDS =
+[
+    { name: 'blastTemperature', description: 'Температура дутья, ºC' },
+    { name: 'blastHumidity', description: 'Влажность дутья, г/м3' },
+    { name: 'oxygenContentInBlast', description: 'Содержание кислорода в дутье, %' },
+    { name: 'naturalGasConsumption', description: 'Расход природного газа, м3/т чугуна' },
+    { name: 'coloshGasPressure', description: 'Давление колошникового газа, ати' },
+    { name: 'chugun_SI', description: 'Содержание Si в чугуне, %' },
+    { name: 'chugun_MN', description: 'Содержание Mn в чугуне, %' },
+    { name: 'chugun_P', description: 'Содержание P в чугуне, %' },
+    { name: 'chugun_S', description: 'Содержание S в чугуне, %' },
+    // { name: 'chugun_C', description: 'Содержание C в чугуне, %' },
+    { name: 'ashContentInCoke', description: 'Содержание золы в коксе, %' },
+    { name: 'sulfurContentInCoke', description: 'Содержание серы в коксе, %' },
+    { name: 'specificConsumptionOfZRM', description: 'Удельный расход ЖРМ, кг/т чугуна' },
+]

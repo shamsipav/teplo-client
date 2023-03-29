@@ -61,7 +61,7 @@
             </tbody>
         </table>
         <div class="d-flex align-items-center">
-            <button type="submit" class="btn btn-primary me-3">Отправить</button>
+            <button type="submit" class="btn btn-warning me-3">Отправить</button>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div class="form-check" on:click={() => saveVariant = !saveVariant}>
                 <input name="save" class="form-check-input" type="checkbox" value={saveVariant} checked={saveVariant}>
