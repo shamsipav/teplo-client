@@ -3,7 +3,7 @@
     import { page } from '$app/stores'
     import axios from 'axios'
     import type { IFurnace, IUnionFullResult } from '$lib/types'
-    import { API_URL, RESULT_FIELDS } from '$lib/consts'
+    import { API_URL, FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
     import { fade } from 'svelte/transition'
     
     let variants: IFurnace[] = $page.data.variants
@@ -80,36 +80,32 @@
             <button type="button" class="btn btn-light mb-3" on:click={() => fullResults = !fullResults}>
                 {fullResults ? 'Краткая форма' : 'Полная форма'}
             </button>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Параметр</th>
-                        <th scope="col">Значение (базовый пер.)</th>
-                        <th scope="col">Значение (сравнительный пер.)</th>
-                        <th scope="col">Отклонение</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- TODO: Убрать дублирующийся код -->
-                    {#each RESULT_FIELDS as field}
-                        {#if !fullResults}
-                            {#if field.name == 'indexOfTheBottomOfTheFurnace' || field.name == 'indexOfTheFurnaceTop' || field.name == 'theoreticalBurningTemperatureOfCarbonCoke' || field.name == 'resultDate'}
-                                <tr transition:fade>
-                                    {#if field.name !== 'resultDate'}
-                                        <td>{field.description}</td>
-                                        {#if field.name == 'theoreticalBurningTemperatureOfCarbonCoke'}
-                                            <td><mark>{Math.round(result.baseResult.result[`${field.name}`])}</mark></td>
-                                            <td><mark>{Math.round(result.comparativeResult.result[`${field.name}`])}</mark></td>
-                                            <td>{Math.abs(Math.round(result.comparativeResult.result[`${field.name}`] - result.baseResult.result[`${field.name}`]))}</td>
-                                        {:else}
-                                            <td><mark>{Math.round(result.baseResult.result[`${field.name}`] * 100) / 100}</mark></td>
-                                            <td><mark>{Math.round(result.comparativeResult.result[`${field.name}`] * 100) / 100}</mark></td>
-                                            <td>{Math.abs(Math.round((result.comparativeResult.result[`${field.name}`] - result.baseResult.result[`${field.name}`]) * 100) / 100)}</td>
-                                        {/if}
-                                    {/if}
-                                </tr>
-                            {/if}
-                        {:else}
+            {#if fullResults}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Параметр</th>
+                            <th scope="col">Значение (базовый пер.)</th>
+                            <th scope="col">Значение (сравнительный пер.)</th>
+                            <th scope="col">Отклонение</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-warning">
+                            <td colspan="7" class="text-center">Исходные данные</td>
+                        </tr>
+                        {#each FURNACE_FIELDS as field}
+                            <tr transition:fade>
+                                <td>{field.description}</td>
+                                <td>{Math.round(result.baseResult.input[`${field.name}`] * 100) / 100}</td>
+                                <td>{Math.round(result.comparativeResult.input[`${field.name}`] * 100) / 100}</td>
+                                <td>{Math.abs(Math.round((result.comparativeResult.input[`${field.name}`] - result.baseResult.input[`${field.name}`]) * 100) / 100)}</td>
+                            </tr>
+                        {/each}
+                        <tr class="table-warning">
+                            <td colspan="7" class="text-center">Результаты расчета</td>
+                        </tr>
+                        {#each RESULT_FIELDS as field}
                             <tr 
                                 class="{field.name == 'indexOfTheBottomOfTheFurnace' ||
                                 field.name == 'indexOfTheFurnaceTop' ||
@@ -129,10 +125,41 @@
                                     {/if}
                                 {/if}
                             </tr>
-                        {/if}
-                    {/each}
-                </tbody>
-            </table>
+                        {/each}
+                    </tbody>
+                </table>
+            {:else}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Параметр</th>
+                            <th scope="col">Значение (базовый пер.)</th>
+                            <th scope="col">Значение (сравнительный пер.)</th>
+                            <th scope="col">Отклонение</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each RESULT_FIELDS as field}
+                            {#if field.name == 'indexOfTheBottomOfTheFurnace' || field.name == 'indexOfTheFurnaceTop' || field.name == 'theoreticalBurningTemperatureOfCarbonCoke' || field.name == 'resultDate'}
+                                <tr transition:fade>
+                                    {#if field.name !== 'resultDate'}
+                                        <td>{field.description}</td>
+                                        {#if field.name == 'theoreticalBurningTemperatureOfCarbonCoke'}
+                                            <td><mark>{Math.round(result.baseResult.result[`${field.name}`])}</mark></td>
+                                            <td><mark>{Math.round(result.comparativeResult.result[`${field.name}`])}</mark></td>
+                                            <td>{Math.abs(Math.round(result.comparativeResult.result[`${field.name}`] - result.baseResult.result[`${field.name}`]))}</td>
+                                        {:else}
+                                            <td><mark>{Math.round(result.baseResult.result[`${field.name}`] * 100) / 100}</mark></td>
+                                            <td><mark>{Math.round(result.comparativeResult.result[`${field.name}`] * 100) / 100}</mark></td>
+                                            <td>{Math.abs(Math.round((result.comparativeResult.result[`${field.name}`] - result.baseResult.result[`${field.name}`]) * 100) / 100)}</td>
+                                        {/if}
+                                    {/if}
+                                </tr>
+                            {/if}
+                        {/each}
+                    </tbody>
+                </table>
+            {/if}
         </div>
     {/if}
 </div>
