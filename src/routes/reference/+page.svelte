@@ -5,6 +5,7 @@
     import { page } from '$app/stores'
     import { filter, removeKeyNames } from '$lib/utils'
     import { fade } from 'svelte/transition'
+    import { Toast } from '$components';
 
     let form
     
@@ -114,33 +115,15 @@
 
 {#if successMessage}
     {#if notifyVisible}
-        <div class="toast align-items-center text-bg-warning border-0 show" role="alert" transition:fade>
-            <div class="d-flex">
-                <div class="toast-body">
-                    {successMessage}
-                </div>
-                <button type="button" class="btn-close btn-close-dark me-2 m-auto" on:click={() => notifyVisible = false}></button>
-            </div>
+        <div class="notify" transition:fade>
+            <Toast>{successMessage}</Toast>
         </div>
     {/if}
 {/if}
 {#if errorMessage}
     {#if notifyVisible}
-        <div class="toast align-items-center text-bg-danger border-0 show" role="alert" transition:fade>
-            <div class="d-flex">
-                <div class="toast-body">
-                    {errorMessage}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" on:click={() => notifyVisible = false}></button>
-            </div>
-        </div>
+    <div class="notify" transition:fade>
+        <Toast variant="error">{errorMessage}</Toast>
+    </div>
     {/if}
 {/if}
-
-<style>
-    .toast {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-    }
-</style>
