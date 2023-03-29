@@ -32,7 +32,7 @@
         //     let cokeFiltered = filter(data, ([key, _]) => key.startsWith('cokeCunsumptionCoefficents'));
         //     let cokeObject = removeKeyNames(cokeFiltered)
 
-        //     let furnaceFiltered = filter(data, ([key, _]) => key.startsWith('furnanceCapacityCoefficents')); 
+        //     let furnaceFiltered = filter(data, ([key, _]) => key.startsWith('furnanceCapacityCoefficents'));
         //     let furnaceObject = removeKeyNames(furnaceFiltered)
 
         //     referenceObject = {

@@ -64,11 +64,11 @@ export const truncate = (str: string, n = 18) => {
     return (str.length > n) ? str.slice(0, n-1) + '..' + `.${extension}` : str
 }
 
-export const filter = (obj, predicate) => Object.fromEntries(Object.entries(obj).filter(predicate));
+export const filter = (obj, predicate) => Object.fromEntries(Object.entries(obj).filter(predicate))
 export const removeKeyNames = (obj) => {
-    let newObj = {}
+    const newObj = {}
     Object.keys(obj).forEach(function(key) {
         newObj[key.split('.')[1]] = obj[key]
-    });
+    })
     return newObj
 }

@@ -1,9 +1,9 @@
 <script lang="ts">
     import axios from 'axios'
-    import { API_URL, REFERENCE_FIELDS } from "$lib/consts";
-    import type { IReference } from "$lib/types";
+    import { API_URL, REFERENCE_FIELDS } from '$lib/consts'
+    import type { IReference } from '$lib/types'
     import { page } from '$app/stores'
-    import { filter, removeKeyNames } from "$lib/utils";
+    import { filter, removeKeyNames } from '$lib/utils'
     import { fade } from 'svelte/transition'
 
     let form
@@ -21,10 +21,10 @@
         const data:any = {}
         formData.forEach((value, key) => data[key] = value)
 
-        let cokeFiltered = filter(data, ([key, _]) => key.startsWith('cokeCunsumptionCoefficents'));
+        let cokeFiltered = filter(data, ([key, _]) => key.startsWith('cokeCunsumptionCoefficents'))
         let cokeObject = removeKeyNames(cokeFiltered)
 
-        let furnaceFiltered = filter(data, ([key, _]) => key.startsWith('furnanceCapacityCoefficents')); 
+        let furnaceFiltered = filter(data, ([key, _]) => key.startsWith('furnanceCapacityCoefficents'))
         let furnaceObject = removeKeyNames(furnaceFiltered)
 
         let referenceObject = {
@@ -42,7 +42,7 @@
             loaderShow = false
 
             setTimeout(() => {
-                notifyVisible = false;
+                notifyVisible = false
             }, 2500)
         } catch (error) {
             successMessage = ''
@@ -50,7 +50,7 @@
             console.log(`Не удалось обновить справочник корректировочных коэффициентов: ${error}`)
             loaderShow = false
             setTimeout(() => {
-                notifyVisible = false;
+                notifyVisible = false
             }, 2500)
         }
     }
