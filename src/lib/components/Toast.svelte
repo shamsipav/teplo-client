@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let variant: 'success' | 'error' = 'success';
+    export let variant: 'success' | 'error' = 'success'
 </script>
 
 <div class="toast align-items-center {variant == 'success' ? 'text-bg-warning' : 'text-bg-danger'}  border-0 show" role="alert">

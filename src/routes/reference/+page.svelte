@@ -5,7 +5,7 @@
     import { page } from '$app/stores'
     import { filter, removeKeyNames } from '$lib/utils'
     import { fade } from 'svelte/transition'
-    import { Toast } from '$components';
+    import { Toast } from '$components'
 
     let form
     
