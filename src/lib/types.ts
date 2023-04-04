@@ -147,3 +147,31 @@ export interface IReference {
     cokeCunsumptionCoefficents: ICoefficients
     furnanceCapacityCoefficents: ICoefficients
 }
+
+export interface IMaterial {
+    id: number;
+    name: string
+    moisture: number
+    fe2O3: number
+    fe: number
+    feO: number
+    caO: number
+    siO2: number
+    mgO: number
+    al2O3: number
+    tiO2: number
+    mnO: number
+    p: number
+    s: number
+    zn: number
+    mn: number
+    cr: number
+    fiveZero: number
+    baseOne: number
+}
+
+export interface IModal {
+    open: () => void,
+    close: () => void,
+    toggle: () => void
+}

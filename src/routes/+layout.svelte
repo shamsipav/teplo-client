@@ -18,6 +18,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/reference">Справочник корректировочных коэффициентов</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/materials">Справочник шихтовых материалов</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -28,7 +31,9 @@
 </main>
 
 <footer>
-    <p class="mt-5 mb-5 text-center">Copyright © {new Date().getFullYear()} | TeploAPI by Pavel Shamsimukhametov</p>
+    <div class="container">
+        <p class="mt-5 mb-3 text-center">Copyright © {new Date().getFullYear()} | TeploAPI by Pavel Shamsimukhametov</p>
+    </div>
 </footer>
 
 <style>

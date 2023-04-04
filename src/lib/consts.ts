@@ -152,3 +152,24 @@ export const PROJECT_FIELDS =
     { name: 'sulfurContentInCoke', description: 'Содержание серы в коксе, %' },
     { name: 'specificConsumptionOfZRM', description: 'Удельный расход ЖРМ, кг/т чугуна' },
 ]
+
+export const MATERIAL_FIELDS = [
+    { name: 'name', description: 'Материал' },
+    { name: 'moisture', description: 'Влага, %' },
+    { name: 'fe2O3', description: 'Fe2O3, %' },
+    { name: 'fe', description: 'Fe, %' },
+    { name: 'feO', description: 'FeO, %' },
+    { name: 'caO', description: 'CaO, %' },
+    { name: 'siO2', description: 'SiO2, %' },
+    { name: 'mgO', description: 'MgO, %' },
+    { name: 'al2O3', description: 'Al2O3, %' },
+    { name: 'tiO2', description: 'TiO2, %' },
+    { name: 'mnO', description: 'MnO, %' },
+    { name: 'p', description: 'P, %' },
+    { name: 's', description: 'S, %' },
+    { name: 'zn', description: 'Zn, %' },
+    { name: 'mn', description: 'Mn, %' },
+    { name: 'cr', description: 'Cr, %' },
+    { name: 'fiveZero', description: '5-0мм, %' },
+    { name: 'baseOne', description: 'Осн1, %' }
+]
