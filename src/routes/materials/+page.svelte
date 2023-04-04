@@ -51,8 +51,9 @@
                 notifyVisible = false
             }, 2500)
         } catch (error) {
+            notifyVisible = true
             successMessage = ''
-            errorMessage = error.response.data
+            errorMessage = 'Не удалось выполнить запрос'
             if (data.id == 0) {
                 console.log(`Не удалось обновить справочник шихтовых материалов: ${error}`)
             } else {
@@ -97,7 +98,7 @@
                 }, 2500)
             } catch (error) {
                 successMessage = ''
-                errorMessage = error.response.data
+                errorMessage = 'Не удалось выполнить запрос'
                 console.log(`Не удалось удалить материал из справочника шихтовых материалов: ${error}`)
 
                 loaderShow = false
@@ -147,7 +148,6 @@
                                 </td>
                             {/each}
                             <td>
-                                <!-- <button type="button" class="btn btn-outline-danger" on:click={() => deleteMaterial(material.id)}>Удалить</button> -->
                                 <button type="button" class="btn btn-outline-danger btn-sm" on:click={() => showConfirmDeleteModal(material)}>Удалить</button>
                             </td>
                         </tr>
