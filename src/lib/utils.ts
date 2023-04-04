@@ -77,7 +77,7 @@ export const getUserInformation = async (token: string) => {
         return response.data
 
     } catch(error) {
-        console.log(error.response?.status)
+        // TODO: Обработать ошибку не нужно?
         return undefined
     }
 }

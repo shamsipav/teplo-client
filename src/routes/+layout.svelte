@@ -83,10 +83,10 @@
                 </li>
             </ul>
             {#if user}
-                <p class="mb-0 me-3">{user.firstName}</p>
+                <a href="/lk" class="link-primary mb-0 me-3">{user.firstName}</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" on:click={logoutHandler}>Выйти</button>
             {:else}
-                <button transition:fade type="button" class="btn btn-outline-primary btn-sm" on:click={loginModal.open}>Войти</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" on:click={loginModal.open}>Войти</button>
             {/if}
         </div>
     </div>
