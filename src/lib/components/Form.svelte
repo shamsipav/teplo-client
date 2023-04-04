@@ -1,7 +1,7 @@
 <script lang="ts">
     import dayjs from 'dayjs'
     import { fade } from 'svelte/transition'
-    import { redirect } from '$lib/utils.js'
+    import { getCookie, redirect } from '$lib/utils.js'
     import type { IFullResult } from '$lib/types'
     import { FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
     import { createEventDispatcher } from 'svelte'
@@ -27,6 +27,7 @@
         formData.forEach((value, key) => data[key] = value)
 
         let CURRENT_URL = data.save == 'true' ? ACTION_URL + '?save=true' : ACTION_URL
+        const token = getCookie('token')
 
         try {
             loaderShow = true
@@ -34,6 +35,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': content,
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(data)
             })
