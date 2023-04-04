@@ -62,13 +62,13 @@
 
 <form class="form" action={path} on:submit|preventDefault={handleSubmit} autocomplete={autocomplete}>
     <slot />
-    {#if successMessage}
-        <p transition:fade>{successMessage}</p>
-    {/if}
-    {#if errorMessage}
-        <p transition:fade>Произошла ошибка при выполнении запроса<br/>{errorMessage}</p>
-    {/if}
 </form>
+{#if successMessage}
+    <p class="mt-2 mb-0" transition:fade>{successMessage}</p>
+{/if}
+{#if errorMessage}
+    <p class="mt-2 mb-0" transition:fade>Произошла ошибка при выполнении запроса<br/>{errorMessage}</p>
+{/if}
 {#if loaderShow}
     <div class="spinner-border mt-4" role="status" transition:fade>
         <span class="visually-hidden">Loading...</span>

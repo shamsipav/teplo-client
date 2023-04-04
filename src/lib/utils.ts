@@ -1,3 +1,7 @@
+import axios from 'axios'
+import https from 'https'
+import { API_URL } from './consts'
+
 export const handleAnchorClick = (event) => {
     event.preventDefault()
     const link = event.currentTarget
@@ -14,16 +18,7 @@ export const redirect = (location: string) => setTimeout(() => { window.location
 
 export async function logout() {
     setCookie('token', null, null)
-    redirect('/')
-    // const response = await fetch('http://localhost:8080/api/auth/logout')
-
-    // if (response.ok) {
-    //     redirect('/')
-    //     console.log('LOGOUT SUCCESS', response)
-
-    // } else {
-    //     console.log('Ошибка HTTP: ' + response.status)
-    // }
+    //redirect('/')
 }
 
 export function getCookie(name) {
@@ -71,4 +66,18 @@ export const removeKeyNames = (obj) => {
         newObj[key.split('.')[1]] = obj[key]
     })
     return newObj
+}
+
+export const getUserInformation = async (token: string) => {
+    try {
+        // TODO: Удалить НЕБЕЗОПАСНЫЙ код
+        const httpsAgent = new https.Agent({ rejectUnauthorized: false })
+        const response = await axios.get(`${API_URL}/auth/user`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+
+        return response.data
+
+    } catch(error) {
+        console.log(error.response?.status)
+        return undefined
+    }
 }
