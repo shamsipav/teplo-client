@@ -2,7 +2,7 @@
     import dayjs from 'dayjs'
     import { page } from '$app/stores'
     import axios from 'axios'
-    import type { IFurnace, IUnionFullResult } from '$lib/types'
+    import type { IFurnace, IResponse, IUnionFullResult } from '$lib/types'
     import { API_URL, FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
     import { fade } from 'svelte/transition'
     
@@ -36,10 +36,11 @@
     const getDifference = async () => {
         try {
             const response = await axios.get(`${API_URL}/base`, { params: { basePeriodId: baseVariantSelected, comparativePeriodId: compVariantSelected } })
-            result = response.data
+            const jsonResult: IResponse = response.data
+            result = jsonResult.result
             errorMessage = ''
         } catch (error) {
-            errorMessage = error.response.data
+            errorMessage = error.response.data.errorMessage
             console.log(`Не удалось обновить варианты исходных данных: ${error}`)
         }
     }

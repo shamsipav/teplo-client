@@ -1,9 +1,9 @@
 <script lang="ts">
     import axios from 'axios'
     import dayjs from 'dayjs'
-    import { Form } from '$components'
+    import { Form, Toast } from '$components'
     import { API_URL, FURNACE_FIELDS } from '$lib/consts'
-    import type { IFurnace, IUser } from '$lib/types'
+    import type { IFurnace, IResponse, IUser } from '$lib/types'
     import type { PageData } from './$types'
     import { getCookie } from '$lib/utils'
     import { fade } from 'svelte/transition'
@@ -14,6 +14,8 @@
     let defaultState = data.default
     let variants: IFurnace[] = data.variants
     let saveVariant = false
+
+    let notifyMessage = ''
 
     let selectedVariant
 
@@ -27,13 +29,25 @@
             const token = getCookie('token')
             if (token) {
                 const response = await axios.get(`${API_URL}/furnace/${user.id}`, { headers: { 'Authorization': `Bearer ${token}` } })
-                variants = response.data
+                const responseResult: IResponse = response.data
+                variants = responseResult.result
             } else {
                 console.log('Не удалось получить токен для обновления списка вариантов')
             }
         } catch (error) {
             console.log(`Не удалось обновить варианты исходных данных: ${error}`)
         }
+    }
+
+    const successHandler = async () => {
+        await getVariants()
+
+        if (defaultState.id > 0 && !saveVariant)
+            notifyMessage = `Вариант ${defaultState.name ? `"${defaultState.name}"` : 'Без названия'} от ${defaultState.saveDate ? dayjs(defaultState.saveDate).format('DD.MM.YYYY') : 'неизвестной даты'} обновлен`
+        else
+            notifyMessage = 'Расчет базового периода выполнен успешно'
+
+        setTimeout(() => notifyMessage = '', 2500)
     }
 </script>
 
@@ -53,7 +67,7 @@
             </select>
         {/if}
     {/if}
-    <Form path="{API_URL}/base" on:success={saveVariant ? getVariants : undefined}>
+    <Form path="{API_URL}/base" on:success={successHandler}>
         {#if defaultState.id > 0}
             <input type="number" name="id" value={defaultState.id} hidden>
         {/if}
@@ -76,7 +90,7 @@
             </tbody>
         </table>
         <div class="d-flex align-items-center">
-            <button type="submit" class="btn btn-warning me-3">Отправить</button>
+            <button type="submit" class="btn btn-success me-3">Отправить</button>
             {#if user}
                 <div class="d-flex align-items-center">
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -93,3 +107,9 @@
         </div>
     </Form>
 </div>
+
+{#if notifyMessage}
+    <div class="notify" transition:fade>
+        <Toast variant="green">{notifyMessage}</Toast>
+    </div>
+{/if}

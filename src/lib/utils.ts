@@ -1,6 +1,7 @@
 import axios from 'axios'
 import https from 'https'
 import { API_URL } from './consts'
+import type { IResponse } from './types'
 
 export const handleAnchorClick = (event) => {
     event.preventDefault()
@@ -73,8 +74,9 @@ export const getUserInformation = async (token: string) => {
         // TODO: Удалить НЕБЕЗОПАСНЫЙ код
         const httpsAgent = new https.Agent({ rejectUnauthorized: false })
         const response = await axios.get(`${API_URL}/auth/user`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+        const responseResult: IResponse = response.data
 
-        return response.data
+        return responseResult.result
 
     } catch(error) {
         // TODO: Обработать ошибку не нужно?

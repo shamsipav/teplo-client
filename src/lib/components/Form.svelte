@@ -2,7 +2,7 @@
     import dayjs from 'dayjs'
     import { fade } from 'svelte/transition'
     import { getCookie, redirect } from '$lib/utils.js'
-    import type { IFullResult } from '$lib/types'
+    import type { IFullResult, IResponse } from '$lib/types'
     import { FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
     import { createEventDispatcher } from 'svelte'
 
@@ -26,6 +26,7 @@
         const data:any = {}
         formData.forEach((value, key) => data[key] = value)
 
+        // TODO: Убрать этот велосипед
         let CURRENT_URL = data.save == 'true' ? ACTION_URL + '?save=true' : ACTION_URL
         const token = getCookie('token')
 
@@ -40,7 +41,8 @@
                 body: JSON.stringify(data)
             })
 
-            result = await res.json()
+            let jsonResult: IResponse = await res.json()
+            result = jsonResult.result
 
             if (res.ok) {
                 loaderShow = false
@@ -51,8 +53,7 @@
                 if (redirectTo) redirect(redirectTo)
             } else {
                 loaderShow = false
-                // errorText = result.errorMessage
-                errorMessage = 'Необходимо настроить errorMessage'
+                errorMessage = jsonResult.errorMessage
                 successMessage = ''
             }
         } catch (error) {
@@ -66,10 +67,10 @@
     <slot />
 </form>
 {#if successMessage}
-    <p class="mt-2 mb-0" transition:fade>{successMessage}</p>
+    <p class="mt-2 mb-0 text-success" transition:fade>{successMessage}</p>
 {/if}
 {#if errorMessage}
-    <p class="mt-2 mb-0" transition:fade>Произошла ошибка при выполнении запроса<br/>{errorMessage}</p>
+    <p class="mt-2 mb-0 text-danger" transition:fade>{errorMessage}</p>
 {/if}
 {#if loaderShow}
     <div class="spinner-border mt-4" role="status" transition:fade>

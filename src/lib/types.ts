@@ -185,3 +185,11 @@ export interface IUser {
     lastLoginIp: string;
     lastLoginDate: string;
 }
+
+export interface IResponse {
+    isSuccess: boolean
+    errorMessage: string
+    status: number
+    successMessage: string
+    result: any
+}

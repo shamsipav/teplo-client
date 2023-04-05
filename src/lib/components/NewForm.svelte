@@ -3,6 +3,7 @@
     import { redirect, setCookie } from '$lib/utils.js'
     import { createEventDispatcher } from 'svelte'
     import { API_URL } from '$lib/consts'
+    import type { IResponse } from '$lib/types'
 
     const dispatch = createEventDispatcher()
 
@@ -33,17 +34,15 @@
                 body: JSON.stringify(data)
             })
 
-            result = await res.text()
+            const jsonResult: IResponse = await res.json()
 
             if (res.ok) {
                 loaderShow = false
                 errorMessage = ''
+                successMessage = jsonResult.successMessage
 
                 if (ACTION_URL == `${API_URL}/auth/login`) {
-                    setCookie('token', result, 3, true)
-                    successMessage = 'Вход выполнен'
-                } else {
-                    successMessage = result
+                    setCookie('token', jsonResult.result, 3, true)
                 }
     
                 dispatch('success')
@@ -52,7 +51,7 @@
                 if (redirectTo) redirect(redirectTo)
             } else {
                 loaderShow = false
-                errorMessage = result
+                errorMessage = jsonResult.errorMessage
                 successMessage = ''
             }
         } catch (error) {
@@ -65,14 +64,15 @@
 
 <form class="form" action={path} on:submit|preventDefault={handleSubmit} autocomplete={autocomplete}>
     <slot />
+    {#if loaderShow}
+        <div class="d-block spinner-border mt-2" role="status" transition:fade>
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    {/if}
 </form>
 {#if successMessage}
-    <p class="mt-2 mb-0" transition:fade>{successMessage}</p>
+    <p class="mt-2 mb-0 text-success" transition:fade>{successMessage}</p>
 {/if}
 {#if errorMessage}
-    <p class="mt-2 mb-0" transition:fade>Произошла ошибка при выполнении запроса<br/>{errorMessage}</p>
+    <p class="mt-2 mb-0 text-danger" transition:fade>{errorMessage}</p>
 {/if}
-
-<style>
-
-</style>
