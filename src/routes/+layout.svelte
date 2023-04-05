@@ -94,7 +94,7 @@
                 </li>
             </ul>
             {#if user}
-                <a href="/lk" class="link-primary mb-0 me-3">{user.firstName}</a>
+                <a href="/lk" class="link-bold mb-0 me-3">{user.firstName}</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" on:click={logout}>Выйти</button>
             {:else}
                 <button type="button" class="btn btn-success btn-sm me-2" on:click={loginModal.open}>Войти</button>

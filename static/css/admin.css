@@ -42,3 +42,14 @@ footer p {
     border-top: 1px solid var(--bs-border-color);
     padding-top: 0.8em;
 }
+
+.link-bold {
+    color: var(--bs-navbar-brand-color);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color .15s;
+}
+
+.link-bold:hover {
+    color: rgba(0, 0, 0, 0.5);
+}

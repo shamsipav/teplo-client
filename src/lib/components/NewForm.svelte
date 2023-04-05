@@ -12,8 +12,6 @@
     export let autocomplete: 'on' | 'off' = 'on'
     export let content: 'application/json' | 'multipart/form-data' = 'application/json'
 
-    let result = undefined
-
     let successMessage = ''
     let errorMessage = ''
     let loaderShow = false
