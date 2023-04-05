@@ -1,7 +1,7 @@
 <script lang="ts">
     import axios, { type AxiosResponse } from 'axios'
     import type { PageData } from './$types'
-    import type { IMaterial, IModal } from '$lib/types'
+    import type { IMaterial, IModal, IResponse } from '$lib/types'
     import { API_URL, MATERIAL_FIELDS } from '$lib/consts'
     import { Toast, Modal } from '$components'
     import { fade } from 'svelte/transition'
@@ -31,19 +31,25 @@
         try {
             loaderShow = true
             let response: AxiosResponse<any, any> = undefined
+            let responseResult: IResponse = undefined
             if (data.id > 0) {
                 response = await axios.put(`${API_URL}/material`, data)
+                responseResult = response.data
+                const material: IMaterial = responseResult.result
+                const currentIndex = materials.findIndex(x => x.id == material.id)
+                materials[currentIndex] = material
             } else {
                 response = await axios.post(`${API_URL}/material`, data)
+                responseResult = response.data
+
                 isNewMaterialAdded = false
 
-                if (materials) materials = [ ...materials, response.data ]
-                else materials = [ response.data ]
+                if (materials) materials = [ ...materials, responseResult.result ]
+                else materials = [ responseResult.result ]
             }
 
-            console.log(response.data)
             errorMessage = ''
-            successMessage = 'Изменения успешно применены'
+            successMessage = responseResult.successMessage
             notifyVisible = true
             loaderShow = false
 
@@ -53,7 +59,7 @@
         } catch (error) {
             notifyVisible = true
             successMessage = ''
-            errorMessage = 'Не удалось выполнить запрос'
+            errorMessage = error.response.data.errorMessage
             if (data.id == 0) {
                 console.log(`Не удалось обновить справочник шихтовых материалов: ${error}`)
             } else {
@@ -85,9 +91,9 @@
             try {
                 loaderShow = true
                 const response = await axios.delete(`${API_URL}/material/${materialId}`)
-                const material: IMaterial = response.data
+                const responseResult: IResponse = response.data
                 errorMessage = ''
-                successMessage = `Материал '${material.name}' успешно удален`
+                successMessage = responseResult.successMessage
                 notifyVisible = true
                 loaderShow = false
 
@@ -98,7 +104,7 @@
                 }, 2500)
             } catch (error) {
                 successMessage = ''
-                errorMessage = 'Не удалось выполнить запрос'
+                errorMessage = error.response.data.errorMessage
                 console.log(`Не удалось удалить материал из справочника шихтовых материалов: ${error}`)
 
                 loaderShow = false
@@ -109,6 +115,10 @@
         }
     }
 </script>
+
+<svelte:head>
+	<title>TeploClient: Материалы</title>
+</svelte:head>
 
 <Modal bind:this={confirmDeleteModal} title="Подтвердите удаление" on:confirm={() => confirmDeleteHandler(deleteMaterialId)}>
     <p>Вы действительно хотите удалить материал '{deleteMaterialName}'?</p>
@@ -183,7 +193,7 @@
 {#if successMessage}
     {#if notifyVisible}
         <div class="notify" transition:fade>
-            <Toast>{successMessage}</Toast>
+            <Toast variant="green">{successMessage}</Toast>
         </div>
     {/if}
 {/if}

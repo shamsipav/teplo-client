@@ -51,11 +51,15 @@
     }
 </script>
 
+<svelte:head>
+	<title>TeploClient: Главная</title>
+</svelte:head>
+
 <div class="container">
     <p class="h3 mb-3">Расчет базового периода</p>
     {#if user}
+        <p class="lead mb-2">Варианты исходных данных</p>
         {#if variants?.length > 0}
-            <p class="lead mb-2">Вариант исходных данных</p>
             <select class="form-select mb-3" bind:value={selectedVariant} aria-label="Default select example" on:change={() => getCurrentVariant(selectedVariant)}>
                 <option selected disabled>Вариант исходных данных</option>
                 <option selected value="0">По умолчанию</option>
@@ -65,6 +69,8 @@
                     </option>
                 {/each}
             </select>
+        {:else}
+            <p class="mt-3">Нет сохраненных вариантов, загружен вариант по умолчанию</p>
         {/if}
     {/if}
     <Form path="{API_URL}/base" on:success={successHandler}>

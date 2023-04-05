@@ -7,6 +7,7 @@
     import type { PageData } from './$types'
     import { logout } from '$lib/utils'
     import { fade } from 'svelte/transition'
+    import { clickOutside } from '$lib/actions'
 
     dayjs.locale('ru')
 
@@ -35,42 +36,42 @@
 <Modal bind:this={loginModal} hasFooter={false} title="Вход">
     <NewForm path="{API_URL}/auth/login" on:success={authentificate} redirectTo="/">
         <div class="form-floating mb-3">
-            <input type="email" name="email" class="form-control" id="email" placeholder="Email">
+            <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
             <label for="email">Email</label>
         </div>
         <div class="form-floating">
-            <input type="password" name="password" class="form-control" id="password" placeholder="Пароль">
+            <input type="password" name="password" class="form-control" id="password" placeholder="Пароль" required>
             <label for="password">Пароль</label>
         </div>
-        <button class="btn btn-primary mt-3">Войти</button>
+        <button class="btn btn-success mt-3">Войти</button>
     </NewForm>
 </Modal>
 
 <Modal bind:this={registerModal} hasFooter={false} title="Регистрация">
     <NewForm path="{API_URL}/auth/signup" on:success={registration}>
         <div class="form-floating mb-3">
-            <input type="text" name="firstName" class="form-control" id="firstName" placeholder="Имя">
+            <input type="text" name="firstName" class="form-control" id="firstName" placeholder="Имя" required>
             <label for="firstName">Имя</label>
         </div>
         <div class="form-floating mb-3">
-            <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Фамилия">
+            <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Фамилия" required>
             <label for="lastName">Фамилия</label>
         </div>
         <div class="form-floating mb-3">
-            <input type="email" name="email" class="form-control" id="email" placeholder="Email">
+            <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
             <label for="email">Email</label>
         </div>
         <div class="form-floating">
-            <input type="password" name="password" class="form-control" id="password" placeholder="Пароль">
+            <input type="password" name="password" class="form-control" id="password" placeholder="Пароль" required>
             <label for="password">Пароль</label>
         </div>
-        <button class="btn btn-primary mt-3">Регистрация</button>
+        <button class="btn btn-success mt-3">Регистрация</button>
     </NewForm>
 </Modal>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
     <div class="container">
-        <a class="navbar-brand" href="/">Teplo Client</a>
+        <a class="navbar-brand" href="/">TeploClient</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
@@ -81,7 +82,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
-                    <a class="nav-link dropdown-toggle" href="" on:click={() => showDropdown = !showDropdown}>Справочники</a>
+                    <a class="nav-link dropdown-toggle" href="" on:click={() => showDropdown = !showDropdown} use:clickOutside={() => showDropdown = false}>Справочники</a>
                     <ul class="dropdown-menu" class:show={showDropdown}>
                         <li class="nav-item">
                             <a class="dropdown-item" href="/reference" on:click={() => showDropdown = false}>Справочник корректировочных коэффициентов</a>
@@ -96,8 +97,8 @@
                 <a href="/lk" class="link-primary mb-0 me-3">{user.firstName}</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" on:click={logout}>Выйти</button>
             {:else}
-                <button type="button" class="btn btn-primary btn-sm me-2" on:click={loginModal.open}>Войти</button>
-                <button type="button" class="btn btn-outline-primary btn-sm" on:click={registerModal.open}>Регистрация</button>
+                <button type="button" class="btn btn-success btn-sm me-2" on:click={loginModal.open}>Войти</button>
+                <button type="button" class="btn btn-outline-success btn-sm" on:click={registerModal.open}>Регистрация</button>
             {/if}
         </div>
     </div>
@@ -107,7 +108,7 @@
     <slot />
     {#if successMessage}
        <div class="notify" transition:fade>
-           <Toast>{successMessage}</Toast>
+           <Toast variant="green">{successMessage}</Toast>
        </div>
     {/if}
 </main>

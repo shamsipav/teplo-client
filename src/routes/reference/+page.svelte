@@ -1,15 +1,16 @@
 <script lang="ts">
     import axios from 'axios'
     import { API_URL, REFERENCE_FIELDS } from '$lib/consts'
-    import type { IReference } from '$lib/types'
-    import { page } from '$app/stores'
+    import type { IReference, IResponse } from '$lib/types'
+    import type { PageData } from './$types'
     import { filter, removeKeyNames } from '$lib/utils'
     import { fade } from 'svelte/transition'
     import { Toast } from '$components'
 
     let form
     
-    let reference: IReference = $page.data.reference
+    export let data: PageData
+    let reference: IReference = data.reference
 
     let errorMessage: string
     let successMessage: string
@@ -36,7 +37,8 @@
         try {
             loaderShow = true
             const response = await axios.post(`${API_URL}/reference`, referenceObject)
-            reference = response.data
+            const responseResult: IResponse = response.data
+            reference = responseResult.result
             errorMessage = ''
             successMessage = 'Изменения успешно применены'
             notifyVisible = true
@@ -47,7 +49,7 @@
             }, 2500)
         } catch (error) {
             successMessage = ''
-            errorMessage = error.response.data
+            errorMessage = error.response.data.errorMessage
             console.log(`Не удалось обновить справочник корректировочных коэффициентов: ${error}`)
             loaderShow = false
             setTimeout(() => {
@@ -56,6 +58,10 @@
         }
     }
 </script>
+
+<svelte:head>
+	<title>TeploClient: Коэффциенты</title>
+</svelte:head>
 
 <div class="container">
     <p class="h3 mb-3">Cправочник корректировочных коэффициентов</p>
@@ -116,7 +122,7 @@
 {#if successMessage}
     {#if notifyVisible}
         <div class="notify" transition:fade>
-            <Toast>{successMessage}</Toast>
+            <Toast variant="green">{successMessage}</Toast>
         </div>
     {/if}
 {/if}
