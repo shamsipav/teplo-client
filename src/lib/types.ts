@@ -4,6 +4,7 @@ export interface PopupComponent {
 }
 
 export interface IFurnace {
+    name: string
     acceptedTemperatureOfBackupZone: number
     ashContentInCoke: number
     averageSizeOfPieceCharge: number

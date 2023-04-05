@@ -6,6 +6,7 @@
     import type { IFurnace, IUser } from '$lib/types'
     import type { PageData } from './$types'
     import { getCookie } from '$lib/utils'
+    import { fade } from 'svelte/transition'
 
     export let data: PageData
 
@@ -46,13 +47,16 @@
                 <option selected value="0">По умолчанию</option>
                 {#each variants as variant}
                     <option value={variant.id}>
-                        Вариант №{variant.id} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
+                        {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
                     </option>
                 {/each}
             </select>
         {/if}
     {/if}
     <Form path="{API_URL}/base" on:success={saveVariant ? getVariants : undefined}>
+        {#if defaultState.id > 0}
+            <input type="number" name="id" value={defaultState.id} hidden>
+        {/if}
         <table class="table">
             <thead>
                 <tr>
@@ -74,11 +78,16 @@
         <div class="d-flex align-items-center">
             <button type="submit" class="btn btn-warning me-3">Отправить</button>
             {#if user}
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <div class="form-check" on:click={() => saveVariant = !saveVariant}>
-                    <input name="save" class="form-check-input" type="checkbox" value={saveVariant} checked={saveVariant}>
-                    <!-- svelte-ignore a11y-label-has-associated-control -->
-                    <label class="form-check-label">Сохранить вариант исходных данных</label>
+                <div class="d-flex align-items-center">
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <div class="form-check" style="flex: 1 0 auto;" on:click={() => saveVariant = !saveVariant}>
+                        <input name="save" class="form-check-input" type="checkbox" value={saveVariant} checked={saveVariant}>
+                        <!-- svelte-ignore a11y-label-has-associated-control -->
+                        <label class="form-check-label">Сохранить вариант исходных данных</label>
+                    </div>
+                    {#if saveVariant}
+                        <input transition:fade type="text" class="form-control ms-3" name="name" placeholder="Название варианта" autocomplete="off" required>
+                    {/if}
                 </div>
             {/if}
         </div>
