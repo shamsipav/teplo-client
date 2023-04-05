@@ -5,7 +5,7 @@
     import { API_URL, FURNACE_FIELDS } from '$lib/consts'
     import type { IFurnace, IUser } from '$lib/types'
     import type { PageData } from './$types'
-    import { getCookie } from '$lib/utils';
+    import { getCookie } from '$lib/utils'
 
     export let data: PageData
 
