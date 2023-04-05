@@ -18,7 +18,7 @@ export const redirect = (location: string) => setTimeout(() => { window.location
 
 export async function logout() {
     setCookie('token', null, null)
-    //redirect('/')
+    redirect('/')
 }
 
 export function getCookie(name) {

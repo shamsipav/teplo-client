@@ -1,12 +1,11 @@
 <script lang='ts'>
-    import axios from 'axios'
     import 'dayjs/locale/ru'
     import dayjs from 'dayjs'
     import type { IModal, IUser } from '$lib/types'
     import { Modal, NewForm, Toast } from '$components'
     import { API_URL } from '$lib/consts'
     import type { PageData } from './$types'
-    import { getCookie, logout } from '$lib/utils'
+    import { logout } from '$lib/utils'
     import { fade } from 'svelte/transition'
 
     dayjs.locale('ru')
@@ -23,29 +22,11 @@
 
     const authentificate = async () => {
         successMessage = 'Вход в аккаунт выполнен'
-        const token = getCookie('token')
-        try {
-            const response = await axios.get(`${API_URL}/auth/user`, { headers: { 'Authorization': `Bearer ${token}` } })
-            user = response.data
-        } catch(error) {
-            // Не нужно обрабатывать
-            user = undefined
-        }
-
-        setTimeout(() => loginModal.close(), 500)
-        setTimeout(() => successMessage = '', 2500)
-    }
-
-    const logoutHandler = () => {
-        logout()
-        successMessage = 'Выход из аккаунта выполнен'
-        setTimeout(() => user = undefined, 250)
-        setTimeout(() => successMessage = '', 2500)
     }
 </script>
 
 <Modal bind:this={loginModal} hasFooter={false} title="Вход">
-    <NewForm path="{API_URL}/auth/login" on:success={authentificate}>
+    <NewForm path="{API_URL}/auth/login" on:success={authentificate} redirectTo="/">
         <div class="form-floating mb-3">
             <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com">
             <label for="email">Email</label>
@@ -84,7 +65,7 @@
             </ul>
             {#if user}
                 <a href="/lk" class="link-primary mb-0 me-3">{user.firstName}</a>
-                <button type="button" class="btn btn-outline-secondary btn-sm" on:click={logoutHandler}>Выйти</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" on:click={logout}>Выйти</button>
             {:else}
                 <button type="button" class="btn btn-outline-primary btn-sm" on:click={loginModal.open}>Войти</button>
             {/if}
