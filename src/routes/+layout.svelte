@@ -15,6 +15,7 @@
     let user: IUser = data.user
 
     let loginModal: IModal = undefined
+    let registerModal: IModal = undefined
 
     let showDropdown = false
 
@@ -23,19 +24,47 @@
     const authentificate = async () => {
         successMessage = 'Вход в аккаунт выполнен'
     }
+
+    const registration = async () => {
+        successMessage = 'Успешная регистрация'
+        setTimeout(() => registerModal.close(), 1000)
+        loginModal.open()
+    }
 </script>
 
 <Modal bind:this={loginModal} hasFooter={false} title="Вход">
     <NewForm path="{API_URL}/auth/login" on:success={authentificate} redirectTo="/">
         <div class="form-floating mb-3">
-            <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com">
+            <input type="email" name="email" class="form-control" id="email" placeholder="Email">
             <label for="email">Email</label>
         </div>
         <div class="form-floating">
-            <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+            <input type="password" name="password" class="form-control" id="password" placeholder="Пароль">
             <label for="password">Пароль</label>
         </div>
         <button class="btn btn-primary mt-3">Войти</button>
+    </NewForm>
+</Modal>
+
+<Modal bind:this={registerModal} hasFooter={false} title="Регистрация">
+    <NewForm path="{API_URL}/auth/signup" on:success={registration}>
+        <div class="form-floating mb-3">
+            <input type="text" name="firstName" class="form-control" id="firstName" placeholder="Имя">
+            <label for="firstName">Имя</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Фамилия">
+            <label for="lastName">Фамилия</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" name="email" class="form-control" id="email" placeholder="Email">
+            <label for="email">Email</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" name="password" class="form-control" id="password" placeholder="Пароль">
+            <label for="password">Пароль</label>
+        </div>
+        <button class="btn btn-primary mt-3">Регистрация</button>
     </NewForm>
 </Modal>
 
@@ -67,7 +96,8 @@
                 <a href="/lk" class="link-primary mb-0 me-3">{user.firstName}</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" on:click={logout}>Выйти</button>
             {:else}
-                <button type="button" class="btn btn-outline-primary btn-sm" on:click={loginModal.open}>Войти</button>
+                <button type="button" class="btn btn-primary btn-sm me-2" on:click={loginModal.open}>Войти</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" on:click={registerModal.open}>Регистрация</button>
             {/if}
         </div>
     </div>
