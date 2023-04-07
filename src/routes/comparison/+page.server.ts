@@ -11,7 +11,7 @@ export async function load({ locals, cookies }) {
     try {
         // TODO: THIS IS NOT SAFE !!!
         const httpsAgent = new https.Agent({ rejectUnauthorized: false })
-        const variantsResponse = await axios.get(`${API_URL}/furnace/${user.id}`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+        const variantsResponse = await axios.get(`${API_URL}/furnace`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
         const variantsResult: IResponse = variantsResponse.data
 
         return {

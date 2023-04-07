@@ -14,7 +14,7 @@ export async function load({ cookies, locals }) {
         const defaultResult: IResponse = defaultResponse.data
 
         if (user) {
-            const variantsResponse = await axios.get(`${API_URL}/furnace/${user.id}`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+            const variantsResponse = await axios.get(`${API_URL}/furnace`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
             const variantsResult: IResponse = variantsResponse.data
 
             return {

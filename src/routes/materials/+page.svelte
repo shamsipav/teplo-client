@@ -5,6 +5,7 @@
     import { API_URL, MATERIAL_FIELDS } from '$lib/consts'
     import { Toast, Modal } from '$components'
     import { fade } from 'svelte/transition'
+    import { getCookie } from '$lib/utils'
 
     let confirmDeleteModal: IModal
 
@@ -14,6 +15,7 @@
     export let data: PageData
 
     let materials: IMaterial[] = data.materials
+    let authorized: boolean = data.authorized
 
     let errorMessage: string
     let successMessage: string
@@ -28,18 +30,20 @@
         const data:any = {}
         formData.forEach((value, key) => data[key] = value)
 
+        const token = getCookie('token')
+
         try {
             loaderShow = true
             let response: AxiosResponse<any, any> = undefined
             let responseResult: IResponse = undefined
             if (data.id > 0) {
-                response = await axios.put(`${API_URL}/material`, data)
+                response = await axios.put(`${API_URL}/material`, data, { headers: { 'Authorization': `Bearer ${token}` } })
                 responseResult = response.data
                 const material: IMaterial = responseResult.result
                 const currentIndex = materials.findIndex(x => x.id == material.id)
                 materials[currentIndex] = material
             } else {
-                response = await axios.post(`${API_URL}/material`, data)
+                response = await axios.post(`${API_URL}/material`, data, { headers: { 'Authorization': `Bearer ${token}` } })
                 responseResult = response.data
 
                 isNewMaterialAdded = false
@@ -88,9 +92,10 @@
 
     const deleteMaterial = async (materialId: number) => {
         if (materialId !== 0) {
+            const token = getCookie('token')
             try {
                 loaderShow = true
-                const response = await axios.delete(`${API_URL}/material/${materialId}`)
+                const response = await axios.delete(`${API_URL}/material/${materialId}`, { headers: { 'Authorization': `Bearer ${token}` } })
                 const responseResult: IResponse = response.data
                 errorMessage = ''
                 successMessage = responseResult.successMessage
@@ -129,64 +134,68 @@
 
 <div class="container">
     <p class="h3 mb-3">Справочник шихтовых материалов</p>
-    <div class="d-flex align-items-center mb-3">
-        <p class="lead me-3 mb-1">Изменения применяются автоматически</p>
-        {#if loaderShow}
-            <div class="spinner-border" role="status" transition:fade>
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        {/if}
-    </div>
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    {#each MATERIAL_FIELDS as field}
-                        <th scope="col">{field.description}</th>
-                    {/each}
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                {#if materials?.length > 0}
-                    {#each materials as material}
-                        <tr>
-                            <input form="updateForm" name="id" type="text" value={material.id} hidden>
-                            {#each MATERIAL_FIELDS as field}
-                                <td>
-                                    <input form="updateForm" type="text" class="form-control" name={field.name} value={material[`${field.name}`]} autocomplete="off" required on:change={() => updateForm.requestSubmit()}>
-                                </td>
-                            {/each}
-                            <td>
-                                <button type="button" class="btn btn-outline-danger btn-sm" on:click={() => showConfirmDeleteModal(material)}>Удалить</button>
-                            </td>
-                        </tr>
-                    {/each}
-                {/if}
-                {#if isNewMaterialAdded}
-                    <tr transition:fade>
+    {#if authorized}
+        <div class="d-flex align-items-center mb-3">
+            <p class="lead me-3 mb-1">Изменения применяются автоматически</p>
+            {#if loaderShow}
+                <div class="spinner-border" role="status" transition:fade>
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            {/if}
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
                         {#each MATERIAL_FIELDS as field}
-                            {#if field.name == 'baseOne'}
-                                <td></td>
-                            {:else}
-                                <td>
-                                    <input form="createForm" type="text" class="form-control" name={field.name} autocomplete="off" required>
-                                </td>
-                            {/if}
+                            <th scope="col">{field.description}</th>
                         {/each}
+                        <th scope="col"></th>
                     </tr>
-                {/if}
-            </tbody>
-        </table>
-    </div>
-    {#if isNewMaterialAdded}
-        <button type="button" class="btn btn-outline-success" on:click={() => createForm.requestSubmit()}>Сохранить</button>
-        <button type="button" class="btn btn-outline-secondary" on:click={() => isNewMaterialAdded = false}>Отмена</button>
+                </thead>
+                <tbody>
+                    {#if materials?.length > 0}
+                        {#each materials as material}
+                            <tr>
+                                <input form="updateForm" name="id" type="text" value={material.id} hidden>
+                                {#each MATERIAL_FIELDS as field}
+                                    <td>
+                                        <input form="updateForm" type="text" class="form-control" name={field.name} value={material[`${field.name}`]} autocomplete="off" required on:change={() => updateForm.requestSubmit()}>
+                                    </td>
+                                {/each}
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" on:click={() => showConfirmDeleteModal(material)}>Удалить</button>
+                                </td>
+                            </tr>
+                        {/each}
+                    {/if}
+                    {#if isNewMaterialAdded}
+                        <tr transition:fade>
+                            {#each MATERIAL_FIELDS as field}
+                                {#if field.name == 'baseOne'}
+                                    <td></td>
+                                {:else}
+                                    <td>
+                                        <input form="createForm" type="text" class="form-control" name={field.name} autocomplete="off" required>
+                                    </td>
+                                {/if}
+                            {/each}
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+        {#if isNewMaterialAdded}
+            <button type="button" class="btn btn-outline-success" on:click={() => createForm.requestSubmit()}>Сохранить</button>
+            <button type="button" class="btn btn-outline-secondary" on:click={() => isNewMaterialAdded = false}>Отмена</button>
+        {:else}
+            <button type="button" class="btn btn-outline-primary" on:click={() => isNewMaterialAdded = true}>Добавить</button>
+        {/if}
+        {#if materials.length == 0 && !isNewMaterialAdded}
+            <p class="mt-3" transition:fade>В справочнике еще нет материалов</p>
+        {/if}
     {:else}
-        <button type="button" class="btn btn-outline-primary" on:click={() => isNewMaterialAdded = true}>Добавить</button>
-    {/if}
-    {#if materials.length == 0 && !isNewMaterialAdded}
-        <p class="mt-3" transition:fade>В справочнике еще нет материалов</p>
+        <p>Справочник шихтовых материалов доступен только для авторизированных пользователей</p>
     {/if}
 </div>
 

@@ -28,7 +28,7 @@
         try {
             const token = getCookie('token')
             if (token) {
-                const response = await axios.get(`${API_URL}/furnace/${user.id}`, { headers: { 'Authorization': `Bearer ${token}` } })
+                const response = await axios.get(`${API_URL}/furnace`, { headers: { 'Authorization': `Bearer ${token}` } })
                 const responseResult: IResponse = response.data
                 variants = responseResult.result
             } else {
