@@ -5,6 +5,7 @@
     import type { IFurnace, IResponse, IUnionFullResult } from '$lib/types'
     import { fade } from 'svelte/transition'
     import axios from 'axios'
+    import { getCookie } from '$lib/utils';
 
     export let data: PageData
 
@@ -30,8 +31,10 @@
         const data: any = {}
         formData.forEach((value, key) => data[key] = value)
 
+        const token = getCookie('token')
+
         try {
-            const response = await axios.post(`${API_URL}/project`, data, { params: { inputDataId: selectedVariant } })
+            const response = await axios.post(`${API_URL}/project`, data, { params: { inputDataId: selectedVariant }, headers: { 'Authorization': `Bearer ${token}` } })
             const responseResult: IResponse = response.data
             result = responseResult.result
         } catch (error) {
