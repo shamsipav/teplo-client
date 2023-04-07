@@ -3,7 +3,7 @@
     import { API_URL, REFERENCE_FIELDS } from '$lib/consts'
     import type { IReference, IResponse } from '$lib/types'
     import type { PageData } from './$types'
-    import { filter, removeKeyNames } from '$lib/utils'
+    import { filter, getCookie, removeKeyNames } from '$lib/utils'
     import { fade } from 'svelte/transition'
     import { Toast } from '$components'
 
@@ -11,6 +11,7 @@
     
     export let data: PageData
     let reference: IReference = data.reference
+    let authorized: boolean = data.authorized
 
     let errorMessage: string
     let successMessage: string
@@ -23,20 +24,22 @@
         const data:any = {}
         formData.forEach((value, key) => data[key] = value)
 
-        let cokeFiltered = filter(data, ([key, _]) => key.startsWith('cokeCunsumptionCoefficents'))
+        let cokeFiltered = filter(data, ([key, _]) => key.startsWith('cokeCunsumptionReference'))
         let cokeObject = removeKeyNames(cokeFiltered)
 
-        let furnaceFiltered = filter(data, ([key, _]) => key.startsWith('furnanceCapacityCoefficents'))
+        let furnaceFiltered = filter(data, ([key, _]) => key.startsWith('furnaceCapacityReference'))
         let furnaceObject = removeKeyNames(furnaceFiltered)
 
         let referenceObject = {
-            cokeCunsumptionCoefficents: cokeObject,
-            furnanceCapacityCoefficents: furnaceObject
+            cokeCunsumptionReference: cokeObject,
+            furnaceCapacityReference: furnaceObject
         }
+
+        const token = getCookie('token')
 
         try {
             loaderShow = true
-            const response = await axios.post(`${API_URL}/reference`, referenceObject)
+            const response = await axios.post(`${API_URL}/reference`, referenceObject, { headers: { 'Authorization': `Bearer ${token}` } })
             const responseResult: IResponse = response.data
             reference = responseResult.result
             errorMessage = ''
@@ -65,58 +68,62 @@
 
 <div class="container">
     <p class="h3 mb-3">Cправочник корректировочных коэффициентов</p>
-    <!-- TODO: Заменить булевый пропс на что-то более универсальное -->
-    <form on:submit|preventDefault={updateReferene} bind:this={form}>
-        <div class="d-flex align-items-center mb-3">
-            <p class="lead me-3 mb-1">Изменения применяются автоматически</p>
-            {#if loaderShow}
-                <div class="spinner-border" role="status" transition:fade>
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+    {#if authorized}
+        <!-- TODO: Заменить булевый пропс на что-то более универсальное -->
+        <form on:submit|preventDefault={updateReferene} bind:this={form}>
+            <div class="d-flex align-items-center mb-3">
+                <p class="lead me-3 mb-1">Изменения применяются автоматически</p>
+                {#if loaderShow}
+                    <div class="spinner-border" role="status" transition:fade>
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                {/if}
+            </div>
+            {#if errorMessage}
+                <p class="text-danger" transition:fade>{errorMessage}</p>
             {/if}
-        </div>
-        {#if errorMessage}
-            <p class="text-danger" transition:fade>{errorMessage}</p>
-        {/if}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Фактор</th>
-                    <th scope="col">Изменение расхода кокса, %</th>
-                    <th scope="col">Изменение производительности печи, %</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each REFERENCE_FIELDS as field}
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>{field.description}</td>
-                        <td>
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                name={'cokeCunsumptionCoefficents.' + field.name} 
-                                value={reference.cokeCunsumptionCoefficents[`${field.name}`]} 
-                                autocomplete="off" 
-                                required
-                                on:change={() => form.requestSubmit()}
-                            >
-                        </td>
-                        <td>
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                name={'furnanceCapacityCoefficents.' + field.name} 
-                                value={reference.furnanceCapacityCoefficents[`${field.name}`]} 
-                                autocomplete="off" 
-                                required
-                                on:change={() => form.requestSubmit()}
-                            >
-                        </td>
+                        <th scope="col">Фактор</th>
+                        <th scope="col">Изменение расхода кокса, %</th>
+                        <th scope="col">Изменение производительности печи, %</th>
                     </tr>
-                {/each}
-            </tbody>
-        </table>
-    </form>
+                </thead>
+                <tbody>
+                    {#each REFERENCE_FIELDS as field}
+                        <tr>
+                            <td>{field.description}</td>
+                            <td>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    name={'cokeCunsumptionReference.' + field.name} 
+                                    value={reference.cokeCunsumptionReference[`${field.name}`]} 
+                                    autocomplete="off" 
+                                    required
+                                    on:change={() => form.requestSubmit()}
+                                >
+                            </td>
+                            <td>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    name={'furnaceCapacityReference.' + field.name} 
+                                    value={reference.furnaceCapacityReference[`${field.name}`]} 
+                                    autocomplete="off" 
+                                    required
+                                    on:change={() => form.requestSubmit()}
+                                >
+                            </td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        </form>
+    {:else}
+        <p>Справочник шихтовых материалов доступен только для авторизированных пользователей</p>
+    {/if}
 </div>
 
 {#if successMessage}

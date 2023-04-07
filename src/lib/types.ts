@@ -145,8 +145,8 @@ export interface ICoefficients {
 }
 
 export interface IReference {
-    cokeCunsumptionCoefficents: ICoefficients
-    furnanceCapacityCoefficents: ICoefficients
+    cokeCunsumptionReference: ICoefficients
+    furnaceCapacityReference: ICoefficients
 }
 
 export interface IMaterial {
