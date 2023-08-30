@@ -5,7 +5,7 @@
     import type { IFurnace, IResponse, IUnionFullResult } from '$lib/types'
     import { fade } from 'svelte/transition'
     import axios from 'axios'
-    import { getCookie } from '$lib/utils';
+    import { getCookie } from '$lib/utils'
 
     export let data: PageData
 

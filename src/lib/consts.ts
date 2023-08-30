@@ -1,4 +1,4 @@
-export const API_URL = 'https://localhost:44349/api'
+export const API_URL = 'https://localhost:7051/api'
 
 export const FURNACE_FIELDS =
 [

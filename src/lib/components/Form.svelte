@@ -1,7 +1,7 @@
 <script lang="ts">
     import dayjs from 'dayjs'
     import { fade } from 'svelte/transition'
-    import { getCookie, redirect } from '$lib/utils.js'
+    import { exportResultToExcel, getCookie, redirect } from '$lib/utils.js'
     import type { IFullResult, IResponse } from '$lib/types'
     import { FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
     import { createEventDispatcher } from 'svelte'
@@ -47,7 +47,7 @@
             if (res.ok) {
                 loaderShow = false
                 errorMessage = ''
-                dispatch('success')
+                dispatch('success', result)
 
                 // e.target.reset()
                 if (redirectTo) redirect(redirectTo)
@@ -85,6 +85,8 @@
             <button type="button" class="btn btn-light mb-3" on:click={() => fullResults = !fullResults}>
                 {fullResults ? 'Краткая форма' : 'Полная форма'}
             </button>
+            <!-- TODO: Экспорт работает только для базового периода -->
+            <button type="button" class="btn btn-light mb-3" on:click={() => exportResultToExcel(result)}>Экспорт в Excel</button>
             {#if fullResults}
                 <table class="table">
                     <thead>

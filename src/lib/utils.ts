@@ -1,7 +1,8 @@
 import axios from 'axios'
 import https from 'https'
-import { API_URL } from './consts'
-import type { IResponse } from './types'
+import { API_URL, FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
+import type { IFullResult, IResponse } from '$lib/types'
+import xlsx from 'json-as-xlsx'
 
 export const handleAnchorClick = (event) => {
     event.preventDefault()
@@ -82,4 +83,42 @@ export const getUserInformation = async (token: string) => {
         // TODO: Обработать ошибку не нужно?
         return undefined
     }
+}
+
+export const exportResultToExcel = async (result: IFullResult) => {
+
+    const inputsForExcel = FURNACE_FIELDS.map(field => ({
+        parameter: field.description,
+        value: result.input[field.name]
+    }))
+
+    const resultsForExcel = RESULT_FIELDS.map(field => ({
+        parameter: field.description,
+        value: result.result[field.name]
+    }))
+
+    const data = [
+        {
+            sheet: 'Расчет теплового режима',
+            columns: [
+                { label: 'Параметр', value: 'parameter' },
+                { label: 'Значение', value: 'value' },
+            ],
+            content: [
+                { parameter: 'Исходные данные', value: '' },
+                ...inputsForExcel,
+                { parameter: 'Результаты расчета', value: ''},
+                ...resultsForExcel
+            ],
+        }
+    ]
+
+    const settings = {
+        fileName: 'MySpreadsheet', // Name of the resulting spreadsheet
+        extraLength: 3, // A bigger number means that columns will be wider
+        writeMode: 'writeFile', // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
+        writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
+    }
+
+    xlsx(data, settings)
 }

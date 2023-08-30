@@ -40,7 +40,9 @@
     }
 
     const successHandler = async () => {
-        await getVariants()
+        if (user) {
+            await getVariants()
+        }
 
         if (defaultState.id > 0 && !saveVariant)
             notifyMessage = `Вариант ${defaultState.name ? `"${defaultState.name}"` : 'Без названия'} от ${defaultState.saveDate ? dayjs(defaultState.saveDate).format('DD.MM.YYYY') : 'неизвестной даты'} обновлен`
