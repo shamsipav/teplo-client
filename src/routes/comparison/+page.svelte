@@ -5,6 +5,7 @@
     import { API_URL, FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
     import { fade } from 'svelte/transition'
     import type { PageData } from './$types'
+    import { exportResultToExcel } from '$lib/utils'
 
     export let data: PageData
     
@@ -63,9 +64,9 @@
                     <select class="form-select mb-3" bind:value={baseVariantSelected} aria-label="Default select example" on:change={checkVariants}>
                         <option value=0 selected disabled>Базовый период</option>               
                         {#each variants as variant}
-                            <option value={variant.id}>
-                                Вариант №{variant.id} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
-                            </option>
+                        <option value={variant.id}>
+                            {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
+                        </option>
                         {/each}
                     </select>
                 </div>
@@ -93,6 +94,7 @@
                 <button type="button" class="btn btn-light mb-3" on:click={() => fullResults = !fullResults}>
                     {fullResults ? 'Краткая форма' : 'Полная форма'}
                 </button>
+                <button type="button" class="btn btn-light mb-3" on:click={() => exportResultToExcel(result, true, 'comparative')}>Экспорт в Excel</button>
                 {#if fullResults}
                     <table class="table">
                         <thead>

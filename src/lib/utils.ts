@@ -1,8 +1,9 @@
 import axios from 'axios'
 import https from 'https'
 import { API_URL, FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
-import type { IFullResult, IResponse } from '$lib/types'
+import type { IFullResult, IResponse, IUnionFullResult } from '$lib/types'
 import xlsx from 'json-as-xlsx'
+import dayjs from 'dayjs'
 
 export const handleAnchorClick = (event) => {
     event.preventDefault()
@@ -85,40 +86,75 @@ export const getUserInformation = async (token: string) => {
     }
 }
 
-export const exportResultToExcel = async (result: IFullResult) => {
-
-    const inputsForExcel = FURNACE_FIELDS.map(field => ({
-        parameter: field.description,
-        value: result.input[field.name]
-    }))
-
-    const resultsForExcel = RESULT_FIELDS.map(field => ({
-        parameter: field.description,
-        value: result.result[field.name]
-    }))
-
-    const data = [
-        {
-            sheet: 'Расчет теплового режима',
-            columns: [
-                { label: 'Параметр', value: 'parameter' },
-                { label: 'Значение', value: 'value' },
-            ],
-            content: [
-                { parameter: 'Исходные данные', value: '' },
-                ...inputsForExcel,
-                { parameter: 'Результаты расчета', value: ''},
-                ...resultsForExcel
-            ],
-        }
-    ]
-
+export const exportResultToExcel = async (result: any, union = false, mode: 'project' | 'comparative' | 'base' = 'base') => {
     const settings = {
-        fileName: 'MySpreadsheet', // Name of the resulting spreadsheet
+        fileName: `Расчет_теплового_режима_${dayjs(new Date()).format('DD.MM.YYYY HH:mm:ss')}`, // Name of the resulting spreadsheet
         extraLength: 3, // A bigger number means that columns will be wider
         writeMode: 'writeFile', // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
     }
 
-    xlsx(data, settings)
+    if (!union) {
+        const inputsForExcel = FURNACE_FIELDS.map(field => ({
+            parameter: field.description,
+            value: result.input[field.name]
+        }))
+
+        const resultsForExcel = RESULT_FIELDS.map(field => ({
+            parameter: field.description,
+            value: result.result[field.name]
+        }))
+
+        const data = [
+            {
+                sheet: 'Расчет тепл. режима (баз.)',
+                columns: [
+                    { label: 'Параметр', value: 'parameter' },
+                    { label: 'Значение', value: 'value' },
+                ],
+                content: [
+                    { parameter: 'Исходные данные', value: '' },
+                    ...inputsForExcel,
+                    { parameter: 'Результаты расчета', value: ''},
+                    ...resultsForExcel
+                ],
+            }
+        ]
+
+        xlsx(data, settings)
+    } else {
+        const baseInputsForExcel = FURNACE_FIELDS.map(field => ({
+            parameter: field.description,
+            baseValue: result.baseResult.input[field.name],
+            compValue: result.comparativeResult.input[field.name],
+            delta: field.name !== 'resultDate' ? Math.abs(Math.round((result.comparativeResult.input[`${field.name}`] - result.baseResult.input[`${field.name}`]) * 100) / 100) : ''
+        }))
+
+        const baseResultsForExcel = RESULT_FIELDS.map(field => ({
+            parameter: field.description,
+            baseValue: result.baseResult.result[field.name],
+            compValue: result.comparativeResult.result[field.name],
+            delta: field.name !== 'resultDate' ? Math.abs(Math.round((result.comparativeResult.result[`${field.name}`] - result.baseResult.result[`${field.name}`]) * 100) / 100) : ''
+        }))
+
+        const data = [
+            {
+                sheet: `Расчет тепл. режима (${mode === 'comparative' ? 'сравн.' : 'проект.'})`,
+                columns: [
+                    { label: 'Параметр', value: 'parameter' },
+                    { label: 'Значение (базовый)', value: 'baseValue' },
+                    { label: `Значение (${mode === 'comparative' ? 'сравнительный' : 'проектный'})`, value: 'compValue' },
+                    { label: 'Отклонение', value: 'delta' },
+                ],
+                content: [
+                    { parameter: 'Исходные данные', value: '' },
+                    ...baseInputsForExcel,
+                    { parameter: 'Результаты расчета', value: ''},
+                    ...baseResultsForExcel
+                ],
+            }
+        ]
+
+        xlsx(data, settings)
+    }
 }

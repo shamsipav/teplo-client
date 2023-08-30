@@ -5,7 +5,7 @@
     import type { IFurnace, IResponse, IUnionFullResult } from '$lib/types'
     import { fade } from 'svelte/transition'
     import axios from 'axios'
-    import { getCookie } from '$lib/utils'
+    import { exportResultToExcel, getCookie } from '$lib/utils'
 
     export let data: PageData
 
@@ -58,7 +58,7 @@
                 <option selected disabled>Вариант исходных данных</option>
                 {#each variants as variant}
                     <option value={variant.id}>
-                        Вариант №{variant.id} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
+                        {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
                     </option>
                 {/each}
             </select>
@@ -103,6 +103,7 @@
                 <button type="button" class="btn btn-light mb-3" on:click={() => fullResults = !fullResults}>
                     {fullResults ? 'Краткая форма' : 'Полная форма'}
                 </button>
+                <button type="button" class="btn btn-light mb-3" on:click={() => exportResultToExcel(result, true, 'project')}>Экспорт в Excel</button>
                 {#if fullResults}
                     <table class="table">
                         <thead>
