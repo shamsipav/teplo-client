@@ -1,7 +1,7 @@
 import axios from 'axios'
 import https from 'https'
 import { API_URL, FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
-import type { IFullResult, IResponse, IUnionFullResult } from '$lib/types'
+import type { IResponse } from '$lib/types'
 import xlsx from 'json-as-xlsx'
 import dayjs from 'dayjs'
 
@@ -122,6 +122,7 @@ export const exportResultToExcel = async (result: any, union = false, mode: 'pro
         ]
 
         xlsx(data, settings)
+
     } else {
         const baseInputsForExcel = FURNACE_FIELDS.map(field => ({
             parameter: field.description,

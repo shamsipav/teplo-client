@@ -28,8 +28,7 @@ export async function load({ cookies, locals }) {
             default: defaultResult.result
         }
     } catch(error) {
-        // TODO: Add logging
-        console.log(error.response.data.errorMessage)
+        console.log(error.response ? error.response.data.errorMessage : 'Не удалось получить данные варианта исходных данных по умолчанию')
         return {
             default: {},
             variants: {}

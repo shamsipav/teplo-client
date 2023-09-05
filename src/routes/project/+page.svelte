@@ -6,6 +6,7 @@
     import { fade } from 'svelte/transition'
     import axios from 'axios'
     import { exportResultToExcel, getCookie } from '$lib/utils'
+    import { Toast } from '$components'
 
     export let data: PageData
 
@@ -20,8 +21,13 @@
     let baseVariant: IFurnace
     let fullResults = false
 
+    let notifyMessage = ''
+
     const getCurrentVariant = (selectedVariant: number) => {
         baseVariant = variants.find(x => x.id == selectedVariant)
+
+        notifyMessage = `Вариант "${baseVariant.name === null ? 'По умолчанию' : baseVariant.name}" успешно загружен`
+        setTimeout(() => notifyMessage = '', 2500)
     }
 
     let result: IUnionFullResult
@@ -190,3 +196,8 @@
         <p>Проектный режим доступен только для авторизированных пользователей</p>
     {/if}
 </div>
+{#if notifyMessage}
+    <div class="notify" transition:fade>
+        <Toast variant="green">{notifyMessage}</Toast>
+    </div>
+{/if}
