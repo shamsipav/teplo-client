@@ -1,1 +1,7 @@
-## Teplo-client
+```bash
+npm install
+```
+
+```bash
+npm run dev
+```
