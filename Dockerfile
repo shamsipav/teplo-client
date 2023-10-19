@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Копирование package.json и package-lock.json в контейнер
 COPY package*.json ./
+COPY tsconfig.json ./
 
 # Установка зависимостей
 RUN npm install
@@ -16,8 +17,6 @@ COPY . .
 # Сборка приложения
 RUN npm run build
 
-# Установка глобального пакета serve для запуска статического сервера
-RUN npm install -g serve
-
-# Установка команды запуска сервера приложения
-CMD ["serve", "-s", "build"]
+EXPOSE 5000
+ENV HOST=0.0.0.0
+CMD [ "npm", "start" ]
