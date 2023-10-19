@@ -26,5 +26,5 @@
 			"./node_modules/@types"
 		]
 	},
-	"extends": "./.svelte-kit/tsconfig.json"
+	"extends": ".svelte-kit/tsconfig.json"
 }
