@@ -7,6 +7,8 @@ WORKDIR /app
 # Копирование package.json и package-lock.json в контейнер
 COPY package*.json ./
 COPY tsconfig.json ./
+COPY svelte.config.js ./
+COPY vite.config.ts ./
 
 # Установка зависимостей
 RUN npm install
