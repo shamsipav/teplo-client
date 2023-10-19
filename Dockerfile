@@ -11,6 +11,6 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-EXPOSE 5000
+EXPOSE 3000
 ENV HOST=0.0.0.0
 CMD [ "node", "build" ]
