@@ -1,16 +1,16 @@
 <script lang="ts">
     import dayjs from 'dayjs'
     import axios from 'axios'
-    import type { IFurnace, IResponse, IUnionFullResult } from '$lib/types'
+    import type { IFurnaceBase, IResponse, IUnionFullResult } from '$lib/types'
     import { API_URL, FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
     import { fade } from 'svelte/transition'
     import type { PageData } from './$types'
-    import { exportResultToExcel } from '$lib/utils'
+    import { exportResultToExcel, getCookie } from '$lib/utils'
 
     export let data: PageData
     
     let authorized: boolean = data.authorized
-    let variants: IFurnace[] = data.variants
+    let variants: IFurnaceBase[] = data.variants
 
     let baseVariantSelected
     let compVariantSelected
@@ -39,13 +39,16 @@
 
     const getDifference = async () => {
         try {
-            const response = await axios.get(`${API_URL}/base`, { params: { basePeriodId: baseVariantSelected, comparativePeriodId: compVariantSelected } })
+            const token = getCookie('token')
+            const responses = await axios.get(`${API_URL}/variant`, { headers: { 'Authorization': `Bearer ${token}` } })
+
+            const response = await axios.get(`${API_URL}/base`, { params: { basePeriodId: baseVariantSelected, comparativePeriodId: compVariantSelected }, headers: { 'Authorization': `Bearer ${token}` } })
             const jsonResult: IResponse = response.data
             result = jsonResult.result
             errorMessage = ''
         } catch (error) {
-            errorMessage = error.response.data.errorMessage
-            console.log(`Не удалось обновить варианты исходных данных: ${error}`)
+            errorMessage = 'Не удалось получить результаты сопоставления'
+            console.log(`Не удалось получить результаты сопоставления: ${error}`)
         }
     }
 </script>
@@ -64,9 +67,9 @@
                     <select class="form-select mb-3" bind:value={baseVariantSelected} aria-label="Default select example" on:change={checkVariants}>
                         <option value=0 selected disabled>Базовый период</option>               
                         {#each variants as variant}
-                        <option value={variant.id}>
-                            {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
-                        </option>
+                            <option value={variant.id}>
+                                {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
+                            </option>
                         {/each}
                     </select>
                 </div>
@@ -75,7 +78,7 @@
                         <option value=0 selected disabled>Сравнительный период</option>
                         {#each variants as variant}
                             <option value={variant.id}>
-                                Вариант №{variant.id} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
+                                {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
                             </option>
                         {/each}
                     </select>
@@ -109,13 +112,15 @@
                             <tr class="table-warning">
                                 <td colspan="7" class="text-center">Исходные данные</td>
                             </tr>
-                            {#each FURNACE_FIELDS as field}
-                                <tr transition:fade>
-                                    <td>{field.description}</td>
-                                    <td>{Math.round(result.baseResult.input[`${field.name}`] * 100) / 100}</td>
-                                    <td>{Math.round(result.comparativeResult.input[`${field.name}`] * 100) / 100}</td>
-                                    <td>{Math.abs(Math.round((result.comparativeResult.input[`${field.name}`] - result.baseResult.input[`${field.name}`]) * 100) / 100)}</td>
-                                </tr>
+                            {#each FURNACE_FIELDS as field, i}
+                                {#if i == 0 || i > 11}
+                                    <tr transition:fade>
+                                        <td>{field.description}</td>
+                                        <td>{Math.round(result.baseResult.input[`${field.name}`] * 100) / 100}</td>
+                                        <td>{Math.round(result.comparativeResult.input[`${field.name}`] * 100) / 100}</td>
+                                        <td>{Math.abs(Math.round((result.comparativeResult.input[`${field.name}`] - result.baseResult.input[`${field.name}`]) * 100) / 100)}</td>
+                                    </tr>
+                                {/if}
                             {/each}
                             <tr class="table-warning">
                                 <td colspan="7" class="text-center">Результаты расчета</td>
@@ -154,6 +159,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr transition:fade>
+                                <td>Номер доменной печи</td>
+                                <td><mark>{result.baseResult.input.numberOfFurnace}</mark></td>
+                                <td><mark>{result.comparativeResult.input.numberOfFurnace}</mark></td>
+                                <td></td>
+                            </tr>
                             {#each RESULT_FIELDS as field}
                                 {#if field.name == 'indexOfTheBottomOfTheFurnace' || field.name == 'indexOfTheFurnaceTop' || field.name == 'theoreticalBurningTemperatureOfCarbonCoke' || field.name == 'resultDate'}
                                     <tr transition:fade>

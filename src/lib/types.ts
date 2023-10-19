@@ -3,7 +3,7 @@ export interface PopupComponent {
     close: () => void
 }
 
-export interface IFurnace {
+export interface IFurnaceBase {
     name: string
     acceptedTemperatureOfBackupZone: number
     ashContentInCoke: number
@@ -54,6 +54,22 @@ export interface IFurnace {
     usefulVolumeOfFurnace: number
     volatileContentInCoke: number
     saveDate: number
+}
+
+export interface IFurnace {
+    id: number
+    numberOfFurnace: number
+    usefulVolumeOfFurnace: number
+    usefulHeightOfFurnace: number
+    diameterOfColoshnik: number
+    diameterOfRaspar: number
+    diameterOfHorn: number
+    heightOfHorn: number
+    heightOfTuyeres: number
+    heightOfZaplechiks: number
+    heightOfRaspar: number
+    heightOfShaft: number
+    heightOfColoshnik: number
 }
 
 export interface IResult {
@@ -112,7 +128,7 @@ export interface IResult {
 }
 
 export interface IFullResult {
-    input: IFurnace
+    input: IFurnaceBase
     result: IResult
 }
 

@@ -10,17 +10,21 @@ export async function load({ cookies, locals }) {
     try {
         // TODO: THIS IS NOT SAFE !!!
         const httpsAgent = new https.Agent({ rejectUnauthorized: false })
-        const defaultResponse = await axios.get(`${API_URL}/furnace/default`, { httpsAgent })
+        const defaultResponse = await axios.get(`${API_URL}/variant/default`, { httpsAgent })
         const defaultResult: IResponse = defaultResponse.data
 
         if (user) {
-            const variantsResponse = await axios.get(`${API_URL}/furnace`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+            const variantsResponse = await axios.get(`${API_URL}/variant`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
             const variantsResult: IResponse = variantsResponse.data
+
+            const furnacesResponse = await axios.get(`${API_URL}/furnace`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+            const furnacesResult: IResponse = furnacesResponse.data
 
             return {
                 user: user,
                 default: defaultResult.result,
-                variants: variantsResult.result
+                variants: variantsResult.result,
+                furnaces: furnacesResult.result
             }
         }
 
@@ -31,7 +35,8 @@ export async function load({ cookies, locals }) {
         console.log(error.response ? error.response.data.errorMessage : 'Не удалось получить данные варианта исходных данных по умолчанию')
         return {
             default: {},
-            variants: {}
+            variants: {},
+            furnaces: {}
         }
     }
 }

@@ -5,6 +5,7 @@
     import type { IFullResult, IResponse } from '$lib/types'
     import { FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
     import { createEventDispatcher } from 'svelte'
+    import axios from 'axios'
 
     const dispatch = createEventDispatcher()
 
@@ -32,33 +33,19 @@
 
         try {
             loaderShow = true
-            let res = await fetch(CURRENT_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': content,
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(data)
-            })
+            const response = await axios.post(ACTION_URL, data, { params: { save: data.save, furnaceId: data.numberOfFurnace }, headers: { 'Authorization': `Bearer ${token}` } })
+            const responseResult: IResponse = response.data
+            result = responseResult.result
 
-            let jsonResult: IResponse = await res.json()
-            result = jsonResult.result
-
-            if (res.ok) {
-                loaderShow = false
-                errorMessage = ''
-                dispatch('success', result)
-
-                // e.target.reset()
-                if (redirectTo) redirect(redirectTo)
-            } else {
-                loaderShow = false
-                errorMessage = jsonResult.errorMessage
-                successMessage = ''
-            }
+            loaderShow = false
+            errorMessage = ''
+            dispatch('success', result)
+            // e.target.reset()
+            if (redirectTo) redirect(redirectTo)
         } catch (error) {
             loaderShow = false
-            errorMessage = 'Попробуйте повторить запрос позже'
+            errorMessage = error.response.data.errorMessage
+            successMessage = ''
         }
     }
 </script>
@@ -99,11 +86,13 @@
                         <tr class="table-warning">
                             <td colspan="7" class="text-center">Исходные данные</td>
                         </tr>
-                        {#each FURNACE_FIELDS as field}
-                            <tr transition:fade>
-                                <td>{field.description}</td>
-                                <td>{Math.round(result.input[`${field.name}`] * 100) / 100}</td>
-                            </tr>
+                        {#each FURNACE_FIELDS as field, i}
+                            {#if i == 0 || i > 11}
+                                <tr transition:fade>
+                                    <td>{field.description}</td>
+                                    <td>{Math.round(result.input[`${field.name}`] * 100) / 100}</td>
+                                </tr>
+                            {/if}
                         {/each}
                         <tr class="table-warning">
                             <td colspan="7" class="text-center">Результаты расчета</td>
@@ -139,6 +128,10 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr transition:fade>
+                            <td>Номер доменной печи</td>
+                            <td><mark>{result.input.numberOfFurnace}</mark></td>
+                        </tr>
                         {#each RESULT_FIELDS as field}
                             {#if field.name == 'indexOfTheBottomOfTheFurnace' || field.name == 'indexOfTheFurnaceTop' || field.name == 'theoreticalBurningTemperatureOfCarbonCoke' || field.name == 'resultDate'}
                                 <tr transition:fade>

@@ -12,19 +12,19 @@ export async function load({ locals, cookies }) {
     try {
         // TODO: THIS IS NOT SAFE !!!
         const httpsAgent = new https.Agent({ rejectUnauthorized: false })
-        const variantsResponse = await axios.get(`${API_URL}/variant`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
-        const variantsResult: IResponse = variantsResponse.data
+        const furnacesResponse = await axios.get(`${API_URL}/furnace`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+        const furnacesResult: IResponse = furnacesResponse.data
 
         return {
             authorized: true,
-            variants: variantsResult.result
+            furnaces: furnacesResult.result
         }
     } catch(error) {
         // TODO: Add logging
         console.log(error.response.data.errorMessage)
         return {
             authorized: true,
-            variants: {}
+            furnaces: {}
         }
     }
 }

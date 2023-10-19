@@ -85,6 +85,9 @@
                     <a class="nav-link dropdown-toggle" href="" on:click={() => showDropdown = !showDropdown} use:clickOutside={() => showDropdown = false}>Справочники</a>
                     <ul class="dropdown-menu" class:show={showDropdown}>
                         <li class="nav-item">
+                            <a class="dropdown-item" href="/furnaces" on:click={() => showDropdown = false}>Справочник доменных печей</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="dropdown-item" href="/reference" on:click={() => showDropdown = false}>Справочник корректировочных коэффициентов</a>
                         </li>
                         <li class="nav-item">

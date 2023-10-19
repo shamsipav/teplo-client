@@ -2,7 +2,7 @@
     import dayjs from 'dayjs'
     import type { PageData } from './$types'
     import { API_URL, FURNACE_FIELDS, PROJECT_FIELDS, RESULT_FIELDS } from '$lib/consts'
-    import type { IFurnace, IResponse, IUnionFullResult } from '$lib/types'
+    import type { IFurnaceBase, IResponse, IUnionFullResult } from '$lib/types'
     import { fade } from 'svelte/transition'
     import axios from 'axios'
     import { exportResultToExcel, getCookie } from '$lib/utils'
@@ -11,14 +11,14 @@
     export let data: PageData
 
     let authorized: boolean = data.authorized
-    let variants: IFurnace[] = data.variants
+    let variants: IFurnaceBase[] = data.variants
 
     let successMessage: string
     let errorMessage: string
 
     let selectedVariant
 
-    let baseVariant: IFurnace
+    let baseVariant: IFurnaceBase
     let fullResults = false
 
     let notifyMessage = ''
@@ -45,7 +45,7 @@
             result = responseResult.result
         } catch (error) {
             successMessage = ''
-            errorMessage = error.response.data.errorMessage
+            errorMessage = 'Не удалось выполнить расчет проектного периода'
             console.log(`Не удалось выполнить расчет проектного периода: ${error}`)
         }
     }
@@ -96,7 +96,7 @@
                     </tbody>
                 </table>
                 <div class="d-flex align-items-center">
-                    <button type="submit" class="btn btn-success">Отправить</button>
+                    <button type="submit" class="btn btn-success">Рассчитать</button>
                 </div>
             </form>
             {#if errorMessage}
@@ -169,6 +169,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr transition:fade>
+                                <td>Номер доменной печи</td>
+                                <td><mark>{result.baseResult.input.numberOfFurnace}</mark></td>
+                                <td><mark>{result.comparativeResult.input.numberOfFurnace}</mark></td>
+                                <td></td>
+                            </tr>
                             {#each RESULT_FIELDS as field}
                                 {#if field.name == 'indexOfTheBottomOfTheFurnace' || field.name == 'indexOfTheFurnaceTop' || field.name == 'theoreticalBurningTemperatureOfCarbonCoke' || field.name == 'resultDate'}
                                     <tr transition:fade>
