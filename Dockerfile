@@ -16,5 +16,5 @@ ENV HOST=0.0.0.0
 CMD [ "node", "build" ]
 
 FROM nginx
-COPY --from=build /app/dist /var/www/html 
-COPY ./.nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/public /usr/share/nginx/html
+# COPY ./.nginx/nginx.conf /etc/nginx/conf.d/default.conf
