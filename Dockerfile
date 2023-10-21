@@ -1,20 +1,16 @@
-FROM node:19 as build
+FROM node:18-alpine AS builder
 WORKDIR /app
-
-COPY package*.json ./
-COPY tsconfig.json ./
-COPY svelte.config.js ./
-COPY vite.config.ts ./
-
-RUN npm install
-
+COPY package*.json .
+RUN npm ci
 COPY . .
 RUN npm run build
+RUN npm prune --production
 
+FROM node:18-alpine
+WORKDIR /app
+COPY --from=builder /app/build build/
+COPY --from=builder /app/node_modules node_modules/
+COPY package.json .
 EXPOSE 3000
-ENV HOST=0.0.0.0
+ENV NODE_ENV=production
 CMD [ "node", "build" ]
-
-FROM nginx
-COPY --from=build /app/public /usr/share/nginx/html
-# COPY ./.nginx/nginx.conf /etc/nginx/conf.d/default.conf
