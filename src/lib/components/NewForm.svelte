@@ -40,7 +40,8 @@
                 successMessage = jsonResult.successMessage
 
                 if (ACTION_URL == `${API_URL}/auth/login`) {
-                    setCookie('token', jsonResult.result, 3, true)
+                    // 3th parameters - secure: true or false, false is NOT SAFE
+                    setCookie('token', jsonResult.result, 3, false)
                 }
     
                 dispatch('success')
