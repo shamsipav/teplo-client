@@ -1,4 +1,4 @@
-export const API_URL = 'http://172.24.176.61:5004/api'
+export const API_URL = 'http://93.88.178.186:5401/api'
 
 export const FURNACE_FIELDS =
 [
