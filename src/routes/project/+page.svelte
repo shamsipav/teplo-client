@@ -2,16 +2,19 @@
     import dayjs from 'dayjs'
     import type { PageData } from './$types'
     import { API_URL, FURNACE_FIELDS, PROJECT_FIELDS, RESULT_FIELDS } from '$lib/consts'
-    import type { IFurnaceBase, IResponse, IUnionFullResult } from '$lib/types'
+    import type { IFurnace, IFurnaceBase, IResponse, IUnionFullResult } from '$lib/types'
     import { fade } from 'svelte/transition'
     import axios from 'axios'
-    import { exportResultToExcel, getCookie } from '$lib/utils'
+    import { exportResultToExcel, getCookie, isGuidNullOrEmpty } from '$lib/utils'
     import { Toast } from '$components'
+    import { NIL as NIL_UUID } from 'uuid'
 
     export let data: PageData
 
     let authorized: boolean = data.authorized
     let variants: IFurnaceBase[] = data.variants
+    let dailes: IFurnaceBase[] = data.dailes
+    let furnaces: IFurnace[] = data.furnaces
 
     let successMessage: string
     let errorMessage: string
@@ -23,11 +26,21 @@
 
     let notifyMessage = ''
 
-    const getCurrentVariant = (selectedVariant: number) => {
-        baseVariant = variants.find(x => x.id == selectedVariant)
+    let selectedFurnace = furnaces?.length > 0 ? furnaces[0].id : NIL_UUID
 
-        notifyMessage = `Вариант "${baseVariant.name === null ? 'По умолчанию' : baseVariant.name}" успешно загружен`
-        setTimeout(() => notifyMessage = '', 2500)
+    let disabledFurnaces = false
+    const getCurrentVariant = (selectedVariant: string) => {
+        if (!isGuidNullOrEmpty(selectedVariant)) {
+            disabledFurnaces = true
+            baseVariant = variants.find(x => x.id == selectedVariant)
+            notifyMessage = `Вариант "${baseVariant.name}" ${baseVariant.saveDate ? 'от ' + dayjs(baseVariant.saveDate).format('DD.MM.YYYY') : ''} успешно загружен`
+            setTimeout(() => notifyMessage = '', 2500)
+        }
+        else {
+            baseVariant = null
+            disabledFurnaces = false
+            result = null
+        }
     }
 
     let result: IUnionFullResult
@@ -39,14 +52,39 @@
 
         const token = getCookie('token')
 
+        const inputDataId = !isGuidNullOrEmpty(selectedVariant) ? selectedVariant : selectedDayId
+
         try {
-            const response = await axios.post(`${API_URL}/project`, data, { params: { inputDataId: selectedVariant }, headers: { 'Authorization': `Bearer ${token}` } })
+            const response = await axios.post(`${API_URL}/project`, data, { params: { inputDataId: inputDataId }, headers: { 'Authorization': `Bearer ${token}` } })
             const responseResult: IResponse = response.data
             result = responseResult.result
+            notifyMessage = `Расчет проектного периода выполнен`
+            setTimeout(() => notifyMessage = '', 2500)
         } catch (error) {
             successMessage = ''
             errorMessage = 'Не удалось выполнить расчет проектного периода'
             console.log(`Не удалось выполнить расчет проектного периода: ${error}`)
+        }
+    }
+
+    let selectedDayId: string
+    let disabledFurnacesAndVariants = false
+    function handleDayChange(event) {
+        let value = event.target.value
+        if (!isGuidNullOrEmpty(value)) 
+        {
+            selectedVariant = NIL_UUID
+            disabledFurnacesAndVariants = true
+            baseVariant = dailes.find(x => x.id == selectedDayId)
+            notifyMessage = `Посуточная информация успешно загружена`
+            setTimeout(() => notifyMessage = '', 2500)
+            //defaultState = dailes.find(x => x.id == value)
+        }
+        else 
+        {
+            disabledFurnacesAndVariants = false
+            baseVariant = null
+            result = null
         }
     }
 </script>
@@ -58,19 +96,53 @@
 <div class="container">
     <p class="h3 mb-3">Проектный режим</p>
     {#if authorized}
-        <p class="lead mb-2">Вариант исходных данных</p>
-        {#if variants?.length > 0}
-            <select class="form-select mb-3" bind:value={selectedVariant} aria-label="Default select example" on:change={() => getCurrentVariant(selectedVariant)}>
-                <option selected disabled>Вариант исходных данных</option>
-                {#each variants as variant}
-                    <option value={variant.id}>
-                        {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
-                    </option>
-                {/each}
-            </select>
-        {:else}
-            <p class="mt-3">Нет сохраненных вариантов</p>
-        {/if}
+        <div class="d-flex">
+            <div class="me-3">
+                {#if variants?.length > 0}
+                    <p class="lead mb-2">Вариант исходных данных</p>
+                    <select class="form-select" bind:value={selectedVariant} aria-label="Default select example" on:change={() => getCurrentVariant(selectedVariant)}  disabled={disabledFurnacesAndVariants}>
+                        <option selected disabled>Вариант исходных данных</option>
+                        <option selected value="{NIL_UUID}">Не выбран</option>
+                        {#each variants as variant}
+                            <option value={variant.id}>
+                                {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
+                            </option>
+                        {/each}
+                    </select>
+                {:else}
+                    <p class="mt-3">Нет сохраненных вариантов</p>
+                {/if}
+            </div>
+            <div class="me-3">
+                {#if furnaces?.length > 0}
+                    <p class="lead mb-2">Доменная печь</p>
+                    <select class="form-select" bind:value={selectedFurnace} aria-label="Default select example" disabled={disabledFurnacesAndVariants || disabledFurnaces}>
+                        <option selected disabled>Доменная печь</option>
+                        {#each furnaces as furnace}
+                            <option value={furnace.id} selected={baseVariant?.furnaceId == furnace.id} >
+                                ДП №{furnace.numberOfFurnace}
+                            </option>
+                        {/each}
+                    </select>
+                {/if}
+            </div>
+            <div class="me-3">
+                {#if dailes?.length > 0}
+                <p class="lead mb-2">Посуточная информация</p>
+                <select class="form-select mb-3" bind:value={selectedDayId} on:change={handleDayChange}>
+                    <option selected disabled>Выбрать за сутки</option>
+                    <option selected value="{NIL_UUID}">Не выбрано</option>
+                    {#each dailes as daily}
+                        {#if daily.furnaceId == selectedFurnace}
+                            <option value={daily.id}>
+                                {dayjs(daily.day).format('DD.MM.YYYY')}
+                            </option>
+                        {/if}
+                    {/each}
+                </select>
+            {/if}
+            </div>
+        </div>
         {#if baseVariant}
             <form on:submit|preventDefault={getProjectResult} transition:fade>
                 <table class="table">
@@ -110,6 +182,9 @@
                     {fullResults ? 'Краткая форма' : 'Полная форма'}
                 </button>
                 <button type="button" class="btn btn-light mb-3" on:click={() => exportResultToExcel(result, true, 'project')}>Экспорт в Excel</button>
+                {#if result.baseResult.input["day"] && result.baseResult.input["day"] !== '0001-01-01T00:00:00'}
+                    <p class="day-info">По данным работы доменной печи за сутки {dayjs(result.baseResult.input["day"]).format('DD.MM.YYYY')}</p>
+                {/if}
                 {#if fullResults}
                     <table class="table">
                         <thead>
@@ -207,3 +282,9 @@
         <Toast variant="green">{notifyMessage}</Toast>
     </div>
 {/if}
+
+<style>
+    .day-info {
+        font-weight: 600;
+    }
+</style>

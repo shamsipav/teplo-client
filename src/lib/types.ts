@@ -39,7 +39,8 @@ export interface IFurnaceBase {
     heatOfBurningOfNaturalGasOnFarms: number
     heatOfIncompleteBurningCarbonOfCoke: number
     temperatureOfCokeThatCameToTuyeres: number
-    id: number
+    id: string
+    furnaceId: string
     naturalGasConsumption: number
     numberOfFurnace: number
     numberOfTuyeres: number
@@ -54,10 +55,11 @@ export interface IFurnaceBase {
     usefulVolumeOfFurnace: number
     volatileContentInCoke: number
     saveDate: number
+    day: string
 }
 
 export interface IFurnace {
-    id: number
+    id: string
     numberOfFurnace: number
     usefulVolumeOfFurnace: number
     usefulHeightOfFurnace: number
@@ -166,7 +168,7 @@ export interface IReference {
 }
 
 export interface IMaterial {
-    id: number;
+    id: string;
     name: string
     moisture: number
     fe2O3: number
@@ -194,7 +196,7 @@ export interface IModal {
 }
 
 export interface IUser {
-    id: number;
+    id: string;
     firstName: string;
     lastName: string;
     email: string;

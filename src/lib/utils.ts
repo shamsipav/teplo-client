@@ -4,6 +4,9 @@ import { API_URL, FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
 import type { IResponse } from '$lib/types'
 import xlsx from 'json-as-xlsx'
 import dayjs from 'dayjs'
+import { NIL as NIL_UUID } from 'uuid'
+
+export const isGuidNullOrEmpty = (input) => input === null || input === NIL_UUID
 
 export const handleAnchorClick = (event) => {
     event.preventDefault()

@@ -6,6 +6,8 @@
     export let closable = true
     export let hasFooter = true
     export let title = 'Modal'
+    export let size = ''
+    export let zIndex = ''
 
     let ready = false
     let visible = false
@@ -41,8 +43,8 @@
 </script>
 
 {#if visible}
-    <div class="modal" in:fade="{{ duration: TRANSITION_DURATION }}" out:fade="{{ delay: TRANSITION_DELAY, duration: TRANSITION_DURATION }}">
-        <div class="modal-dialog modal-dialog-centered">
+    <div class="modal" style="z-index: {zIndex};" in:fade="{{ duration: TRANSITION_DURATION }}" out:fade="{{ delay: TRANSITION_DELAY, duration: TRANSITION_DURATION }}">
+        <div class="modal-dialog {size} modal-dialog-centered">
             <div class="modal-content" use:clickOutside={close}>
                 <div class="modal-header">
                     <h5 class="modal-title">{ title }</h5>

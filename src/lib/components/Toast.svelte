@@ -13,6 +13,7 @@
 
 <style>
     .toast {
+        z-index: 3000;
         position: fixed;
         bottom: 20px;
         right: 20px;

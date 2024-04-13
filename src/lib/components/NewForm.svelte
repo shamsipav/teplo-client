@@ -1,6 +1,6 @@
 <script lang="ts">
     import { fade } from 'svelte/transition'
-    import { redirect, setCookie } from '$lib/utils.js'
+    import { getCookie, redirect, setCookie } from '$lib/utils.js'
     import { createEventDispatcher } from 'svelte'
     import { API_URL } from '$lib/consts'
     import type { IResponse } from '$lib/types'
@@ -24,10 +24,14 @@
 
         try {
             loaderShow = true
+
+            const token = getCookie('token')
+    
             let res = await fetch(ACTION_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': content,
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(data)
             })
@@ -44,7 +48,7 @@
                     setCookie('token', jsonResult.result, 3, false)
                 }
     
-                dispatch('success')
+                dispatch('success', { result: jsonResult })
 
                 // e.target.reset()
                 if (redirectTo) redirect(redirectTo)

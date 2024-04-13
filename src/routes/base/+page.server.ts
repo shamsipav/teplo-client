@@ -20,11 +20,15 @@ export async function load({ cookies, locals }) {
             const furnacesResponse = await axios.get(`${API_URL}/furnace`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
             const furnacesResult: IResponse = furnacesResponse.data
 
+            const dailyResponse = await axios.get(`${API_URL}/daily`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+            const dailyResult: IResponse = dailyResponse.data
+
             return {
                 user: user,
                 default: defaultResult.result,
                 variants: variantsResult.result,
-                furnaces: furnacesResult.result
+                furnaces: furnacesResult.result,
+                dailes: dailyResult.result
             }
         }
 
@@ -36,7 +40,8 @@ export async function load({ cookies, locals }) {
         return {
             default: {},
             variants: {},
-            furnaces: {}
+            furnaces: {},
+            dailes: {}
         }
     }
 }

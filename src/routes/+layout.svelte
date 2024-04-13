@@ -71,9 +71,16 @@
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
     <div class="container">
-        <a class="navbar-brand" href="/">TeploClient</a>
+        <a class="navbar-brand" href="/">
+            <img src="/img/urfu-logo.png" alt="" height="32" class="d-inline-block align-text-top me-2">
+            <img src="/img/tim-logo.png" alt="" height="32" class="d-inline-block align-text-top me-2">
+            TeploClient
+          </a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/base">Базовый режим</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/comparison">Сопоставление</a>
                 </li>
@@ -84,6 +91,9 @@
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <a class="nav-link dropdown-toggle" href="" on:click={() => showDropdown = !showDropdown} use:clickOutside={() => showDropdown = false}>Справочники</a>
                     <ul class="dropdown-menu" class:show={showDropdown}>
+                        <li class="nav-item">
+                            <a class="dropdown-item" href="/daily" on:click={() => showDropdown = false}>Посуточная информация о печах</a>
+                        </li>
                         <li class="nav-item">
                             <a class="dropdown-item" href="/furnaces" on:click={() => showDropdown = false}>Справочник доменных печей</a>
                         </li>

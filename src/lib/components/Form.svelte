@@ -13,6 +13,7 @@
     export let redirectTo = ''
     export let autocomplete: 'on' | 'off' = 'on'
     export let content: 'application/json' | 'multipart/form-data' = 'application/json'
+    export let isAuthorized = false
 
     let fullResults = false
     let result: IFullResult = undefined
@@ -27,8 +28,6 @@
         const data:any = {}
         formData.forEach((value, key) => data[key] = value)
 
-        // TODO: Убрать этот велосипед
-        let CURRENT_URL = data.save == 'true' ? ACTION_URL + '?save=true' : ACTION_URL
         const token = getCookie('token')
 
         try {
@@ -44,7 +43,7 @@
             if (redirectTo) redirect(redirectTo)
         } catch (error) {
             loaderShow = false
-            errorMessage = error.response.data.errorMessage
+            errorMessage = error.response.data.errorMessage ?? 'Возникла непредвиденная ошибка'
             successMessage = ''
         }
     }
@@ -72,6 +71,9 @@
             <button type="button" class="btn btn-light mb-3" on:click={() => fullResults = !fullResults}>
                 {fullResults ? 'Краткая форма' : 'Полная форма'}
             </button>
+            {#if result.input["day"] && result.input["day"] !== '0001-01-01T00:00:00'}
+                <p class="day-info">По данным работы доменной печи за сутки {dayjs(result.input["day"]).format('DD.MM.YYYY')}</p>
+            {/if}
             <!-- TODO: Экспорт работает только для базового периода -->
             <button type="button" class="btn btn-light mb-3" on:click={() => exportResultToExcel(result)}>Экспорт в Excel</button>
             {#if fullResults}
@@ -87,7 +89,14 @@
                             <td colspan="7" class="text-center">Исходные данные</td>
                         </tr>
                         {#each FURNACE_FIELDS as field, i}
-                            {#if i == 0 || i > 11}
+                            {#if isAuthorized}
+                                {#if i == 0 || i > 11}
+                                    <tr transition:fade>
+                                        <td>{field.description}</td>
+                                        <td>{Math.round(result.input[`${field.name}`] * 100) / 100}</td>
+                                    </tr>
+                                {/if}
+                            {:else}
                                 <tr transition:fade>
                                     <td>{field.description}</td>
                                     <td>{Math.round(result.input[`${field.name}`] * 100) / 100}</td>
@@ -157,5 +166,7 @@
 {/if}
 
 <style>
-
+    .day-info {
+        font-weight: 600;
+    }
 </style>

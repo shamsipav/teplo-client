@@ -40,7 +40,6 @@
     const getDifference = async () => {
         try {
             const token = getCookie('token')
-            const responses = await axios.get(`${API_URL}/variant`, { headers: { 'Authorization': `Bearer ${token}` } })
 
             const response = await axios.get(`${API_URL}/base`, { params: { basePeriodId: baseVariantSelected, comparativePeriodId: compVariantSelected }, headers: { 'Authorization': `Bearer ${token}` } })
             const jsonResult: IResponse = response.data
