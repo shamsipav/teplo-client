@@ -58,7 +58,7 @@
             const response = await axios.post(`${API_URL}/project`, data, { params: { inputDataId: inputDataId }, headers: { 'Authorization': `Bearer ${token}` } })
             const responseResult: IResponse = response.data
             result = responseResult.result
-            notifyMessage = `Расчет проектного периода выполнен`
+            notifyMessage = 'Расчет проектного периода выполнен'
             setTimeout(() => notifyMessage = '', 2500)
         } catch (error) {
             successMessage = ''
@@ -71,16 +71,16 @@
     let disabledFurnacesAndVariants = false
     function handleDayChange(event) {
         let value = event.target.value
-        if (!isGuidNullOrEmpty(value)) 
+        if (!isGuidNullOrEmpty(value))
         {
             selectedVariant = NIL_UUID
             disabledFurnacesAndVariants = true
             baseVariant = dailes.find(x => x.id == selectedDayId)
-            notifyMessage = `Посуточная информация успешно загружена`
+            notifyMessage = 'Посуточная информация успешно загружена'
             setTimeout(() => notifyMessage = '', 2500)
             //defaultState = dailes.find(x => x.id == value)
         }
-        else 
+        else
         {
             disabledFurnacesAndVariants = false
             baseVariant = null
@@ -182,8 +182,8 @@
                     {fullResults ? 'Краткая форма' : 'Полная форма'}
                 </button>
                 <button type="button" class="btn btn-light mb-3" on:click={() => exportResultToExcel(result, true, 'project')}>Экспорт в Excel</button>
-                {#if result.baseResult.input["day"] && result.baseResult.input["day"] !== '0001-01-01T00:00:00'}
-                    <p class="day-info">По данным работы доменной печи за сутки {dayjs(result.baseResult.input["day"]).format('DD.MM.YYYY')}</p>
+                {#if result.baseResult.input['day'] && result.baseResult.input['day'] !== '0001-01-01T00:00:00'}
+                    <p class="day-info">По данным работы доменной печи за сутки {dayjs(result.baseResult.input['day']).format('DD.MM.YYYY')}</p>
                 {/if}
                 {#if fullResults}
                     <table class="table">

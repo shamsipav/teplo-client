@@ -71,8 +71,8 @@
             <button type="button" class="btn btn-light mb-3" on:click={() => fullResults = !fullResults}>
                 {fullResults ? 'Краткая форма' : 'Полная форма'}
             </button>
-            {#if result.input["day"] && result.input["day"] !== '0001-01-01T00:00:00'}
-                <p class="day-info">По данным работы доменной печи за сутки {dayjs(result.input["day"]).format('DD.MM.YYYY')}</p>
+            {#if result.input['day'] && result.input['day'] !== '0001-01-01T00:00:00'}
+                <p class="day-info">По данным работы доменной печи за сутки {dayjs(result.input['day']).format('DD.MM.YYYY')}</p>
             {/if}
             <!-- TODO: Экспорт работает только для базового периода -->
             <button type="button" class="btn btn-light mb-3" on:click={() => exportResultToExcel(result)}>Экспорт в Excel</button>

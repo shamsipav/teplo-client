@@ -79,7 +79,7 @@
         }
     }
 
-    const successHandler = async (e) => {
+    const successHandler = async () => {
         if (user) {
             await getVariants()
         }
@@ -97,13 +97,13 @@
     let disabledFurnacesAndVariants = false
     function handleDayChange(event) {
         let value = event.target.value
-        if (!isGuidNullOrEmpty(value)) 
+        if (!isGuidNullOrEmpty(value))
         {
             selectedVariant = NIL_UUID
             disabledFurnacesAndVariants = true
             defaultState = dailes.find(x => x.id == value)
         }
-        else 
+        else
         {
             disabledFurnacesAndVariants = false
             defaultState = data.default
@@ -174,8 +174,8 @@
         {/if}
     {/if}
     {#if Object.keys(defaultState).length > 0}
-        <Form path="{API_URL}/base" on:success={successHandler} isAuthorized={user != null}>
-            {#if defaultState.id != null}
+        <Form path="{API_URL}/base" on:success={successHandler} isAuthorized={user !== null}>
+            {#if defaultState.id !== null}
                 <input type="string" name="id" value={defaultState.id} hidden>
             {/if}
             <input type="string" name="day" value={defaultState.day} hidden>

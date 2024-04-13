@@ -1,8 +1,8 @@
 <script lang="ts">
     import axios, { type AxiosResponse } from 'axios'
     import type { PageData } from './$types'
-    import type { IMaterial, IModal, IResponse, IFurnaceBase } from '$lib/types'
-    import { API_URL, FURNACE_FIELDS, MATERIAL_FIELDS } from '$lib/consts'
+    import type { IModal, IResponse, IFurnaceBase } from '$lib/types'
+    import { API_URL, FURNACE_FIELDS} from '$lib/consts'
     import { Toast, Modal } from '$components'
     import { fade } from 'svelte/transition'
     import { getCookie } from '$lib/utils'

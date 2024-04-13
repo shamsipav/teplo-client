@@ -1,29 +1,29 @@
 <script lang="ts">
-     import { onMount } from 'svelte';
-       import 'intro.js/introjs.css';
-       import introJs from 'intro.js';
-       
-       onMount(() => {
-           const intro = introJs();
-           intro.setOptions({
-               steps: [
-                    {
-                        title: 'Welcome',
-                        intro: "Welcome to the tutorial",
-                    },
-                    {
-                        element: document.querySelector('#step1'),
-                        intro: "This is step 1",
-                    },
-                    {
-                        element: document.querySelector('#step2'),
-                        intro: "This is step 2",
-                    }
-               ]
-           })
-           intro.setOption("dontShowAgain", false)
-           intro.start()
-       });
+     import { onMount } from 'svelte'
+     import 'intro.js/introjs.css'
+     import introJs from 'intro.js'
+     
+     onMount(() => {
+         const intro = introJs()
+         intro.setOptions({
+             steps: [
+                 {
+                     title: 'Welcome',
+                     intro: 'Welcome to the tutorial',
+                 },
+                 {
+                     element: document.querySelector('#step1'),
+                     intro: 'This is step 1',
+                 },
+                 {
+                     element: document.querySelector('#step2'),
+                     intro: 'This is step 2',
+                 }
+             ]
+         })
+         intro.setOption('dontShowAgain', false)
+         intro.start()
+     })
 </script>
 
 <svelte:head>

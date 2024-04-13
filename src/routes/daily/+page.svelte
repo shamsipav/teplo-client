@@ -13,9 +13,6 @@
     let confirmDeleteModal: IModal
     let createModal: IModal
 
-    let updateForm: HTMLFormElement
-    let createForm: HTMLFormElement
-
     let modalTitle = 'Добавить данные о работе доменной печи'
 
     export let data: PageData

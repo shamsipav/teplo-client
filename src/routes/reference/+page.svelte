@@ -24,9 +24,11 @@
         const data:any = {}
         formData.forEach((value, key) => data[key] = value)
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let cokeFiltered = filter(data, ([key, _]) => key.startsWith('cokeCunsumptionReference'))
         let cokeObject = removeKeyNames(cokeFiltered)
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let furnaceFiltered = filter(data, ([key, _]) => key.startsWith('furnaceCapacityReference'))
         let furnaceObject = removeKeyNames(furnaceFiltered)
 
