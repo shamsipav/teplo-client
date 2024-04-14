@@ -163,13 +163,12 @@ export const exportResultToExcel = async (result: any, union = false, mode: 'pro
     }
 }
 
-export const buildMaterialsObjectsArray = (materialsWithValue: any[], selectedDayId: string, selectedVariant: string) => {
+export const buildMaterialsObjectsArray = (materialsWithValue: any[], workParamsId: string) => {
     let materialObjects = []
 
     materialsWithValue.forEach(material => {
         const materialId = material.id
         const consumption = material.value
-        const workParamsId = isGuidNullOrEmpty(selectedDayId) ? selectedVariant : selectedDayId
 
         const materialObject = { MaterialId: materialId, Consumption: consumption, WorkParamsId: workParamsId }
         materialObjects = [...materialObjects, materialObject]

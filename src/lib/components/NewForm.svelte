@@ -11,6 +11,8 @@
     export let redirectTo = ''
     export let autocomplete: 'on' | 'off' = 'on'
     export let content: 'application/json' | 'multipart/form-data' = 'application/json'
+    // TODO: Сделать универсальный объект, дополняющий formData
+    export let materials: any[] = []
 
     let successMessage = ''
     let errorMessage = ''
@@ -21,6 +23,8 @@
         const formData = new FormData(e.target)
         const data:any = {}
         formData.forEach((value, key) => data[key] = value)
+
+        data['materialsWorkParamsList'] = materials
 
         try {
             loaderShow = true

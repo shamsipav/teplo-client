@@ -62,6 +62,7 @@
         } else {
             defaultState = data.default
             disabledFurnaces = false
+            specificConsumptionOfZRM = defaultState.specificConsumptionOfZRM
         }
     }
 
@@ -121,22 +122,44 @@
 
     let selectedDayId: string
     let disabledFurnacesAndVariants = false
+    let disabledMaterials = false
     function handleDayChange(event) {
         let value = event.target.value
         if (!isGuidNullOrEmpty(value))
         {
             selectedVariant = NIL_UUID
             disabledFurnacesAndVariants = true
+
             defaultState = dailes.find(x => x.id == value)
+            
+            // Показываем пользователю сохранившиеся значения выбранных вариантов
+            let choosedMaterials = defaultState.materialsWorkParamsList
+            if (choosedMaterials?.length > 0)
+                choosedMaterials.forEach(choosed => {
+                    materialsWithValue.forEach(material => {
+                        if (material.id == choosed.materialId)
+                            material.value = choosed.consumption
+                    })
+                })
+            else
+                materialsWithValue.forEach(material => {
+                    material.value = 0
+                })
+
+            // Пересчитываем общий удельный расход ЖРМ
+            calculateTotal()
+
+            disabledMaterials = true
         }
         else
         {
             disabledFurnacesAndVariants = false
             defaultState = data.default
+            disabledMaterials = false
         }
     }
 
-    let specificConsumptionOfZRM = 0
+    let specificConsumptionOfZRM = defaultState.specificConsumptionOfZRM
     const calculateTotal = () => {
         // @ts-ignore
         specificConsumptionOfZRM = materialsWithValue.reduce((acc, material) => acc + parseFloat(material.value), 0)
@@ -147,7 +170,7 @@
         notifyMessage = 'Значение удельного расхода ЖРМ обновлено'
         setTimeout(() => notifyMessage = '', 2500)
 
-        materialObjects = buildMaterialsObjectsArray(materialsWithValue, selectedDayId, selectedVariant)
+        materialObjects = buildMaterialsObjectsArray(materialsWithValue, isGuidNullOrEmpty(selectedDayId) ? selectedVariant : selectedDayId)
     }
 </script>
 
@@ -155,7 +178,7 @@
 	<title>TeploClient: Главная</title>
 </svelte:head>
 
-<Modal bind:this={materialModal} title="Выбор шихтовых материалов" on:confirm={materialsChoosed}>
+<Modal hasFooter={!disabledMaterials} bind:this={materialModal} title="Шихтовые материалы" on:confirm={materialsChoosed}>
     {#if materialsWithValue?.length > 0}
         <table class="table">
             <thead>
@@ -169,7 +192,7 @@
                     <tr>
                         <td>{material.name}</td>
                         <td>
-                            <input type="text" class="form-control" autocomplete="off" bind:value={material.value} on:change={calculateTotal} required>
+                            <input type="text" class="form-control" autocomplete="off" bind:value={material.value} on:change={calculateTotal} disabled={disabledMaterials} required>
                         </td>
                     </tr>
                 {/each}
@@ -250,7 +273,9 @@
             <input type="string" name="saveDate" value={defaultState.saveDate} hidden>
             <input type="string" name="furnaceId" value={selectedFurnace ?? NIL_UUID} hidden>
             {#if user}
-                <button type="button" class="btn btn-outline-secondary" on:click={materialModal.open}>Выбрать шихтовые материалы</button>
+                <button type="button" class="btn btn-outline-secondary" on:click={materialModal.open}>
+                    {disabledMaterials ? 'Показать' : 'Выбрать'} шихтовые материалы
+                </button>
             {/if}
             <div class="d-flex align-items-start">
                 <table class="table">
@@ -268,7 +293,7 @@
                                         <tr>
                                             <td>{field.description}</td>
                                             <td>
-                                                <input type="text" class="form-control material" name={field.name} value={specificConsumptionOfZRM} readonly required>
+                                                <input type="text" class="form-control material" name={field.name} autocomplete="off" value={specificConsumptionOfZRM} readonly required>
                                             </td>
                                         </tr>
                                     {:else}
@@ -343,11 +368,3 @@
         <Toast variant="green">{notifyMessage}</Toast>
     </div>
 {/if}
-
-
-<style>
-    .material {
-        background-color: var(--bs-form-control-disabled-bg);
-        opacity: 1;
-    }
-</style>

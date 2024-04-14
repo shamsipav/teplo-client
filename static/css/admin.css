@@ -53,3 +53,8 @@ footer p {
 .link-bold:hover {
     color: rgba(0, 0, 0, 0.5);
 }
+
+.material {
+    background-color: var(--bs-form-control-disabled-bg);
+    opacity: 1;
+}

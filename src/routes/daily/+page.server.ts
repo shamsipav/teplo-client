@@ -21,11 +21,15 @@ export async function load({ locals, cookies }) {
         const dailyResponse = await axios.get(`${API_URL}/daily`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
         const dailyResult: IResponse = dailyResponse.data
 
+        const materialsResponse = await axios.get(`${API_URL}/material`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+        const materialResult: IResponse = materialsResponse.data
+
         return {
             authorized: true,
             default: defaultResult.result,
             furnaces: furnacesResult.result,
-            dailes: dailyResult.result
+            dailes: dailyResult.result,
+            materials: materialResult.result
         }
     } catch(error) {
         // TODO: Add logging
@@ -33,7 +37,8 @@ export async function load({ locals, cookies }) {
         return {
             authorized: true,
             furnaces: {},
-            dailes: {}
+            dailes: {},
+            materials: {}
         }
     }
 }

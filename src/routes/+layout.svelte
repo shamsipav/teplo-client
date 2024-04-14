@@ -71,9 +71,9 @@
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
     <div class="container">
-        <a class="navbar-brand" href="/">
-            <img src="/img/urfu-logo.png" alt="" height="32" class="d-inline-block align-text-top me-2">
-            <img src="/img/tim-new-logo.svg" alt="" height="32" class="d-inline-block align-text-top me-2">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="/img/urfu-logo-gray.svg" alt="" height="32" class="d-inline-block align-text-top me-2">
+            <img src="/img/tim-logo-gray.svg" alt="" height="38" class="d-inline-block align-text-top me-2">
             TeploClient
           </a>
         <div class="collapse navbar-collapse">
