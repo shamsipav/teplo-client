@@ -6,7 +6,7 @@
     import type { IFurnace, IFurnaceBase, IMaterial, IResponse, IUser, IModal } from '$lib/types'
     // @ts-ignore
     import type { PageData } from './$types'
-    import { getCookie, isGuidNullOrEmpty } from '$lib/utils'
+    import { buildMaterialsObjectsArray, getCookie, isGuidNullOrEmpty } from '$lib/utils'
     import { fade } from 'svelte/transition'
     import { NIL as NIL_UUID } from 'uuid'
 
@@ -20,7 +20,11 @@
     let furnaces: IFurnace[] = data.furnaces
     let dailes: IFurnaceBase[] = data.dailes
     let materials: IMaterial[] = data.materials
-    const materialsWithValue = materials?.map(material => ({ ...material, value: 0})) ?? null // для возможности суммировать базовое значение
+
+    let materialsWithValue = materials?.map(material => ({ ...material, value: 0})) ?? null
+
+    // Список выбранных шихтовых материалов
+    let materialObjects = []
 
     let saveVariant = false
 
@@ -35,6 +39,23 @@
             defaultState = isGuidNullOrEmpty(selectedVariant) ? data.default : variants.find(x => x.id == selectedVariant)
             saveVariant = false
             disabledFurnaces = true
+
+            // Показываем пользователю сохранившиеся значения выбранных вариантов
+            let choosedMaterials = defaultState.materialsWorkParamsList
+            if (choosedMaterials?.length > 0)
+                choosedMaterials.forEach(choosed => {
+                    materialsWithValue.forEach(material => {
+                        if (material.id == choosed.materialId)
+                            material.value = choosed.consumption
+                    })
+                })
+            else
+                materialsWithValue.forEach(material => {
+                    material.value = 0
+                })
+
+            // Пересчитываем общий удельный расход ЖРМ
+            calculateTotal()
 
             notifyMessage = `Вариант "${defaultState.name === null ? 'По умолчанию' : defaultState.name}" ${defaultState.saveDate ? 'от ' + dayjs(defaultState.saveDate).format('DD.MM.YYYY') : ''} успешно загружен`
             setTimeout(() => notifyMessage = '', 2500)
@@ -125,6 +146,8 @@
         materialModal.close()
         notifyMessage = 'Значение удельного расхода ЖРМ обновлено'
         setTimeout(() => notifyMessage = '', 2500)
+
+        materialObjects = buildMaterialsObjectsArray(materialsWithValue, selectedDayId, selectedVariant)
     }
 </script>
 
@@ -219,7 +242,7 @@
         {/if}
     {/if}
     {#if Object.keys(defaultState).length > 0}
-        <Form path="{API_URL}/base" on:success={successHandler} isAuthorized={user !== null}>
+        <Form path="{API_URL}/base" on:success={successHandler} materials={materialObjects} isAuthorized={user !== null}>
             {#if defaultState.id !== null}
                 <input type="string" name="id" value={defaultState.id} hidden>
             {/if}
@@ -243,9 +266,9 @@
                                 {#if i > 11}
                                     {#if field.name == 'specificConsumptionOfZRM'}
                                         <tr>
-                                            <td>{field.description}2222</td>
+                                            <td>{field.description}</td>
                                             <td>
-                                                <input type="text" class="form-control material" name={field.name} value={1} readonly required>
+                                                <input type="text" class="form-control material" name={field.name} value={specificConsumptionOfZRM} readonly required>
                                             </td>
                                         </tr>
                                     {:else}

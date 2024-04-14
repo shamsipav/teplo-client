@@ -56,6 +56,7 @@ export interface IFurnaceBase {
     volatileContentInCoke: number
     saveDate: number
     day: string
+    materialsWorkParamsList: IChoosedMaterial[]
 }
 
 export interface IFurnace {
@@ -188,6 +189,13 @@ export interface IMaterial {
     fiveZero: number
     baseOne: number
     value: number
+}
+
+export interface IChoosedMaterial {
+    id: string
+    materialId: string
+    furnaceBaseParamId: string
+    consumption: number
 }
 
 export interface IModal {

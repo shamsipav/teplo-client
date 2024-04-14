@@ -14,6 +14,7 @@
     export let autocomplete: 'on' | 'off' = 'on'
     export let content: 'application/json' | 'multipart/form-data' = 'application/json'
     export let isAuthorized = false
+    export let materials: any[] = []
 
     let fullResults = false
     let result: IFullResult = undefined
@@ -28,11 +29,13 @@
         const data:any = {}
         formData.forEach((value, key) => data[key] = value)
 
+        data['materialsWorkParamsList'] = materials
+
         const token = getCookie('token')
 
         try {
             loaderShow = true
-            const response = await axios.post(ACTION_URL, data, { params: { save: data.save, furnaceId: data.numberOfFurnace }, headers: { 'Authorization': `Bearer ${token}` } })
+            const response = await axios.post(ACTION_URL, data, { params: { save: data.save }, headers: { 'Authorization': `Bearer ${token}` } })
             const responseResult: IResponse = response.data
             result = responseResult.result
 
