@@ -28,17 +28,17 @@
 
     let selectedFurnace = furnaces?.length > 0 ? furnaces[0].id : NIL_UUID
 
-    let disabledFurnaces = false
+    let disabledFurnacesAndDaily = false
     const getCurrentVariant = (selectedVariant: string) => {
         if (!isGuidNullOrEmpty(selectedVariant)) {
-            disabledFurnaces = true
+            disabledFurnacesAndDaily = true
             baseVariant = variants.find(x => x.id == selectedVariant)
             notifyMessage = `Вариант "${baseVariant.name}" ${baseVariant.saveDate ? 'от ' + dayjs(baseVariant.saveDate).format('DD.MM.YYYY') : ''} успешно загружен`
             setTimeout(() => notifyMessage = '', 2500)
         }
         else {
             baseVariant = null
-            disabledFurnaces = false
+            disabledFurnacesAndDaily = false
             result = null
         }
     }
@@ -100,7 +100,7 @@
             <div class="me-3">
                 {#if variants?.length > 0}
                     <p class="lead mb-2">Вариант исходных данных</p>
-                    <select class="form-select" bind:value={selectedVariant} aria-label="Default select example" on:change={() => getCurrentVariant(selectedVariant)}  disabled={disabledFurnacesAndVariants}>
+                    <select class="form-select" bind:value={selectedVariant} aria-label="Default select example" on:change={() => getCurrentVariant(selectedVariant)} disabled={disabledFurnacesAndVariants}>
                         <option selected disabled>Вариант исходных данных</option>
                         <option selected value="{NIL_UUID}">Не выбран</option>
                         {#each variants as variant}
@@ -116,7 +116,7 @@
             <div class="me-3">
                 {#if furnaces?.length > 0}
                     <p class="lead mb-2">Доменная печь</p>
-                    <select class="form-select" bind:value={selectedFurnace} aria-label="Default select example" disabled={disabledFurnacesAndVariants || disabledFurnaces}>
+                    <select class="form-select" bind:value={selectedFurnace} aria-label="Default select example" disabled={disabledFurnacesAndVariants || disabledFurnacesAndDaily}>
                         <option selected disabled>Доменная печь</option>
                         {#each furnaces as furnace}
                             <option value={furnace.id} selected={baseVariant?.furnaceId == furnace.id}>
@@ -129,7 +129,7 @@
             <div class="me-3">
                 {#if dailes?.length > 0}
                     <p class="lead mb-2">Посуточная информация</p>
-                    <select class="form-select mb-3" bind:value={selectedDayId} on:change={handleDayChange}>
+                    <select class="form-select mb-3" bind:value={selectedDayId} on:change={handleDayChange} disabled={disabledFurnacesAndDaily}>
                         <option selected disabled>Выбрать за сутки</option>
                         <option selected value="{NIL_UUID}">Не выбрано</option>
                         {#each dailes as daily}
