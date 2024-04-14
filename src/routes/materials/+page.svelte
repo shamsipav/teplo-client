@@ -1,11 +1,12 @@
 <script lang="ts">
     import axios, { type AxiosResponse } from 'axios'
+    // @ts-ignore
     import type { PageData } from './$types'
     import type { IMaterial, IModal, IResponse } from '$lib/types'
     import { API_URL, MATERIAL_FIELDS } from '$lib/consts'
     import { Toast, Modal } from '$components'
     import { fade } from 'svelte/transition'
-    import { getCookie } from '$lib/utils'
+    import { getCookie, isGuidNullOrEmpty } from '$lib/utils'
 
     let confirmDeleteModal: IModal
 
@@ -36,7 +37,8 @@
             loaderShow = true
             let response: AxiosResponse<any, any> = undefined
             let responseResult: IResponse = undefined
-            if (data.id > 0) {
+            if (!isGuidNullOrEmpty(data.id)) {
+                console.log(data.id)
                 response = await axios.put(`${API_URL}/material`, data, { headers: { 'Authorization': `Bearer ${token}` } })
                 responseResult = response.data
                 const material: IMaterial = responseResult.result
@@ -78,20 +80,20 @@
     }
 
     let deleteMaterialName: string
-    let deleteMaterialId: number
+    let deleteMaterialId: string
     const showConfirmDeleteModal = (material: IMaterial) => {
         deleteMaterialName = material.name
         deleteMaterialId = material.id
         confirmDeleteModal.open()
     }
 
-    const confirmDeleteHandler = async (materialId: number) => {
+    const confirmDeleteHandler = async (materialId: string) => {
         confirmDeleteModal.close()
         await deleteMaterial(materialId)
     }
 
-    const deleteMaterial = async (materialId: number) => {
-        if (materialId !== 0) {
+    const deleteMaterial = async (materialId: string) => {
+        if (!isGuidNullOrEmpty(materialId)) {
             const token = getCookie('token')
             try {
                 loaderShow = true

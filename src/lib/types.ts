@@ -187,6 +187,7 @@ export interface IMaterial {
     cr: number
     fiveZero: number
     baseOne: number
+    value: number
 }
 
 export interface IModal {

@@ -23,12 +23,16 @@ export async function load({ cookies, locals }) {
             const dailyResponse = await axios.get(`${API_URL}/daily`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
             const dailyResult: IResponse = dailyResponse.data
 
+            const materialsResponse = await axios.get(`${API_URL}/material`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+            const materialResult: IResponse = materialsResponse.data
+
             return {
                 user: user,
                 default: defaultResult.result,
                 variants: variantsResult.result,
                 furnaces: furnacesResult.result,
-                dailes: dailyResult.result
+                dailes: dailyResult.result,
+                materials: materialResult.result
             }
         }
 
@@ -41,7 +45,8 @@ export async function load({ cookies, locals }) {
             default: {},
             variants: {},
             furnaces: {},
-            dailes: {}
+            dailes: {},
+            materials: {}
         }
     }
 }

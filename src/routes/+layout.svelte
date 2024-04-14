@@ -73,7 +73,7 @@
     <div class="container">
         <a class="navbar-brand" href="/">
             <img src="/img/urfu-logo.png" alt="" height="32" class="d-inline-block align-text-top me-2">
-            <img src="/img/tim-logo.png" alt="" height="32" class="d-inline-block align-text-top me-2">
+            <img src="/img/tim-new-logo.svg" alt="" height="32" class="d-inline-block align-text-top me-2">
             TeploClient
           </a>
         <div class="collapse navbar-collapse">
@@ -133,5 +133,4 @@
 </footer>
 
 <style>
-
 </style>

@@ -1,19 +1,29 @@
 <script lang="ts">
     import dayjs from 'dayjs'
     import axios from 'axios'
-    import type { IFurnaceBase, IResponse, IUnionFullResult } from '$lib/types'
+    import type { IFurnaceBase, IResponse, IUnionFullResult, IFurnace } from '$lib/types'
     import { API_URL, FURNACE_FIELDS, RESULT_FIELDS } from '$lib/consts'
     import { fade } from 'svelte/transition'
+    // @ts-ignore
     import type { PageData } from './$types'
-    import { exportResultToExcel, getCookie } from '$lib/utils'
+    import { exportResultToExcel, getCookie, isGuidNullOrEmpty } from '$lib/utils'
+    import { NIL as NIL_UUID } from 'uuid'
 
     export let data: PageData
     
     let authorized: boolean = data.authorized
     let variants: IFurnaceBase[] = data.variants
+    let dailes: IFurnaceBase[] = data.dailes
+    let furnaces: IFurnace[] = data.furnaces
 
-    let baseVariantSelected
-    let compVariantSelected
+    let selectedBaseFurnace = furnaces?.length > 0 ? furnaces[0].id : NIL_UUID
+    let selectedBaseDayId = NIL_UUID
+
+    let selectedCompFurnace = furnaces?.length > 0 ? furnaces[0].id : NIL_UUID
+    let selectedCompDayId = NIL_UUID
+
+    let baseVariantSelected = NIL_UUID
+    let compVariantSelected = NIL_UUID
 
     let disabled = false
 
@@ -25,15 +35,21 @@
 
     disabled = true
 
-    const checkVariants = () => {
-        if (baseVariantSelected == 0 || compVariantSelected == 0) {
+    const validateChoosedData = () => {
+        if (isGuidNullOrEmpty(baseVariantSelected) || isGuidNullOrEmpty(compVariantSelected))
+        {
             disabled = true
-        } else if (baseVariantSelected == compVariantSelected) {
-            disabled = true
-            errorMessage = 'Необходимо выбрать разные варианты исходных данных'
         } else {
             disabled = false
-            errorMessage = ''
+        }
+
+        if (isGuidNullOrEmpty(baseVariantSelected) && isGuidNullOrEmpty(compVariantSelected)) {
+            if (isGuidNullOrEmpty(selectedBaseDayId) || isGuidNullOrEmpty(selectedCompDayId))
+            {
+                disabled = true
+            } else {
+                disabled = false
+            }
         }
     }
 
@@ -41,14 +57,61 @@
         try {
             const token = getCookie('token')
 
-            const response = await axios.get(`${API_URL}/base`, { params: { basePeriodId: baseVariantSelected, comparativePeriodId: compVariantSelected }, headers: { 'Authorization': `Bearer ${token}` } })
+            const baseParamsId = isGuidNullOrEmpty(baseVariantSelected) ? selectedBaseDayId : baseVariantSelected
+            const compParamsId = isGuidNullOrEmpty(compVariantSelected) ? selectedCompDayId : compVariantSelected
+
+            const response = await axios.get(`${API_URL}/base`, { params: { basePeriodId: baseParamsId, comparativePeriodId: compParamsId }, headers: { 'Authorization': `Bearer ${token}` } })
             const jsonResult: IResponse = response.data
             result = jsonResult.result
             errorMessage = ''
         } catch (error) {
-            errorMessage = 'Не удалось получить результаты сопоставления'
+            errorMessage = error.response.data.errorMessage ?? 'Не удалось получить результаты сопоставления'
             console.log(`Не удалось получить результаты сопоставления: ${error}`)
         }
+    }
+
+    let disabledBaseFurnacesAndDaily = false
+    const baseVariantHandler = (event) => {
+        let value = event.target.value
+        if (!isGuidNullOrEmpty(value)) {
+            disabledBaseFurnacesAndDaily = true
+        } else {
+            disabledBaseFurnacesAndDaily = false
+        }
+        validateChoosedData()
+    }
+
+    let disabledBaseVariantsAndFurnaces = false
+    const handleBaseDayChange = (event) => {
+        let value = event.target.value
+        if (!isGuidNullOrEmpty(value)) {
+            disabledBaseVariantsAndFurnaces = true
+        } else {
+            disabledBaseVariantsAndFurnaces = false
+        }
+        validateChoosedData()
+    }
+
+    let disabledCompFurnacesAndDaily = false
+    const compVariantHandler = (event) => {
+        let value = event.target.value
+        if (!isGuidNullOrEmpty(value)) {
+            disabledCompFurnacesAndDaily = true
+        } else {
+            disabledCompFurnacesAndDaily = false
+        }
+        validateChoosedData()
+    }
+
+    let disabledCompVariantsAndFurnaces = false
+    const handleCompDayChange = (event) => {
+        let value = event.target.value
+        if (!isGuidNullOrEmpty(value)) {
+            disabledCompVariantsAndFurnaces = true
+        } else {
+            disabledCompVariantsAndFurnaces = false
+        }
+        validateChoosedData()
     }
 </script>
 
@@ -57,36 +120,117 @@
 </svelte:head>
 
 <div class="container">
-    <p class="h3 mb-3">Сопоставление параметров расчета базовых периодов</p>
+    <p class="h3 mb-4">Сопоставление параметров расчета базовых периодов</p>
     {#if authorized}
-        <p class="lead mb-2">Варианты исходных данных</p>
-        {#if variants?.length > 0}
-            <div class="row">
-                <div class="col">
-                    <select class="form-select mb-3" bind:value={baseVariantSelected} aria-label="Default select example" on:change={checkVariants}>
-                        <option value=0 selected disabled>Базовый период</option>               
-                        {#each variants as variant}
-                            <option value={variant.id}>
-                                {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
-                            </option>
-                        {/each}
-                    </select>
+        <div>
+            <p class="h5 mb-3">Базовый период</p>
+            <div class="d-flex mb-3">
+                <div class="me-3">
+                    <p class="lead mb-2">Варианты исходных данных</p>
+                    {#if variants?.length > 0}
+                        <div class="row">
+                            <div class="col">
+                                <select class="form-select mb-3" bind:value={baseVariantSelected} aria-label="Default select example" on:change={baseVariantHandler} disabled={disabledBaseVariantsAndFurnaces}>
+                                    <option value=0 selected disabled>Базовый период</option>   
+                                    <option value="{NIL_UUID}" selected>Не выбран</option>            
+                                    {#each variants as variant}
+                                        <option value={variant.id}>
+                                            {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
+                                        </option>
+                                    {/each}
+                                </select>
+                            </div>
+                        </div>
+                    {/if}
                 </div>
-                <div class="col">
-                    <select class="form-select mb-3" bind:value={compVariantSelected} aria-label="Default select example" on:change={checkVariants}>
-                        <option value=0 selected disabled>Сравнительный период</option>
-                        {#each variants as variant}
-                            <option value={variant.id}>
-                                {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
-                            </option>
-                        {/each}
-                    </select>
+                <div class="me-3">
+                    {#if furnaces?.length > 0}
+                        <p class="lead mb-2">Доменная печь</p>
+                        <select class="form-select" bind:value={selectedBaseFurnace} aria-label="Default select example" disabled={disabledBaseFurnacesAndDaily || disabledBaseVariantsAndFurnaces}>
+                            <option selected disabled>Доменная печь</option>
+                            <option value="{NIL_UUID}" selected>Не выбрана</option>
+                            {#each furnaces as furnace}
+                                <!-- Выбирается исходя из варианта исходных данных базового периода -->
+                                <option value={furnace.id} selected={variants.find(v => v.id == baseVariantSelected)?.furnaceId == furnace.id}>
+                                    ДП №{furnace.numberOfFurnace}
+                                </option>
+                            {/each}
+                        </select>
+                    {/if}
+                </div>
+                <div class="me-3">
+                    {#if dailes?.length > 0}
+                        <p class="lead mb-2">Посуточная информация</p>
+                        <select class="form-select mb-3" bind:value={selectedBaseDayId} on:change={handleBaseDayChange} disabled={disabledBaseFurnacesAndDaily}>
+                            <option selected disabled>Выбрать за сутки</option>
+                            <option selected value="{NIL_UUID}">Не выбрано</option>
+                            {#each dailes as daily}
+                                {#if daily.furnaceId == selectedBaseFurnace}
+                                    <option value={daily.id}>
+                                        {dayjs(daily.day).format('DD.MM.YYYY')}
+                                    </option>
+                                {/if}
+                            {/each}
+                        </select>
+                    {/if}
                 </div>
             </div>
-            <button type="button" class="btn btn-success" on:click={getDifference} disabled={disabled}>Сравнить</button>
-        {:else}
-            <p class="mt-3">Нет сохраненных вариантов</p>
-        {/if}
+        </div>
+        <div>
+            <p class="h5 mb-3">Сравнительный период</p>
+            <div class="d-flex">
+                <div class="me-3">
+                    <p class="lead mb-2">Варианты исходных данных</p>
+                    {#if variants?.length > 0}
+                        <div class="row">
+                            <div class="col">
+                                <select class="form-select mb-3" bind:value={compVariantSelected} aria-label="Default select example" on:change={compVariantHandler} disabled={disabledCompVariantsAndFurnaces}>
+                                    <option value=0 selected disabled>Сравнительный период</option>   
+                                    <option value="{NIL_UUID}" selected>Не выбран</option>            
+                                    {#each variants as variant}
+                                        <option value={variant.id}>
+                                            {variant.name ? `"${variant.name}"` : 'Без названия'} от {variant.saveDate ? dayjs(variant.saveDate).format('DD.MM.YYYY HH:mm:ss') : 'неизвестной даты'}
+                                        </option>
+                                    {/each}
+                                </select>
+                            </div>
+                        </div>
+                    {/if}
+                </div>
+                <div class="me-3">
+                    {#if furnaces?.length > 0}
+                        <p class="lead mb-2">Доменная печь</p>
+                        <select class="form-select" bind:value={selectedCompFurnace} aria-label="Default select example" disabled={disabledCompFurnacesAndDaily || disabledCompVariantsAndFurnaces}>
+                            <option selected disabled>Доменная печь</option>
+                            <option value="{NIL_UUID}" selected>Не выбрана</option>
+                            {#each furnaces as furnace}
+                                <!-- Выбирается исходя из варианта исходных данных базового периода -->
+                                <option value={furnace.id} selected={variants.find(v => v.id == compVariantSelected)?.furnaceId == furnace.id}>
+                                    ДП №{furnace.numberOfFurnace}
+                                </option>
+                            {/each}
+                        </select>
+                    {/if}
+                </div>
+                <div class="me-3">
+                    {#if dailes?.length > 0}
+                        <p class="lead mb-2">Посуточная информация</p>
+                        <select class="form-select mb-3" bind:value={selectedCompDayId} on:change={handleCompDayChange} disabled={disabledCompFurnacesAndDaily}>
+                            <option selected disabled>Выбрать за сутки</option>
+                            <option selected value="{NIL_UUID}">Не выбрано</option>
+                            {#each dailes as daily}
+                                {#if daily.furnaceId == selectedCompFurnace}
+                                    <option value={daily.id}>
+                                        {dayjs(daily.day).format('DD.MM.YYYY')}
+                                    </option>
+                                {/if}
+                            {/each}
+                        </select>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-success" on:click={getDifference} disabled={disabled}>Произвести сравнительный расчет</button>
         {#if errorMessage}
             <p class="text-danger mt-3" transition:fade>{errorMessage}</p>
         {/if}
@@ -145,6 +289,14 @@
                                     {/if}
                                 </tr>
                             {/each}
+                            {#if result.baseResult.input['day'] !== '0001-01-01T00:00:00' && result.comparativeResult.input['day'] !== '0001-01-01T00:00:00'}
+                                <tr class="table-primary" transition:fade>
+                                    <td>Данные за сутки</td>
+                                    <td><mark>{dayjs(result.baseResult.input['day']).format('DD.MM.YYYY')}</mark></td>
+                                    <td><mark>{dayjs(result.comparativeResult.input['day']).format('DD.MM.YYYY')}</mark></td>
+                                    <td></td>
+                                </tr>
+                            {/if}
                         </tbody>
                     </table>
                 {:else}
@@ -182,6 +334,14 @@
                                     </tr>
                                 {/if}
                             {/each}
+                            {#if result.baseResult.input['day'] !== '0001-01-01T00:00:00' && result.comparativeResult.input['day'] !== '0001-01-01T00:00:00'}
+                            <tr transition:fade>
+                                    <td>Данные за сутки</td>
+                                    <td><mark>{dayjs(result.baseResult.input['day']).format('DD.MM.YYYY')}</mark></td>
+                                    <td><mark>{dayjs(result.comparativeResult.input['day']).format('DD.MM.YYYY')}</mark></td>
+                                    <td></td>
+                                </tr>
+                            {/if}
                         </tbody>
                     </table>
                 {/if}

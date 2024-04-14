@@ -71,10 +71,6 @@
             <button type="button" class="btn btn-light mb-3" on:click={() => fullResults = !fullResults}>
                 {fullResults ? 'Краткая форма' : 'Полная форма'}
             </button>
-            {#if result.input['day'] && result.input['day'] !== '0001-01-01T00:00:00'}
-                <p class="day-info">По данным работы доменной печи за сутки {dayjs(result.input['day']).format('DD.MM.YYYY')}</p>
-            {/if}
-            <!-- TODO: Экспорт работает только для базового периода -->
             <button type="button" class="btn btn-light mb-3" on:click={() => exportResultToExcel(result)}>Экспорт в Excel</button>
             {#if fullResults}
                 <table class="table">
@@ -115,7 +111,7 @@
                             >
                                 {#if field.name == 'resultDate'}
                                     <td>{field.description}</td>
-                                    <td><mark>{dayjs(result.result[`${field.name}`]).format('DD.MM.YYYY HH:mm:ss')}</mark></td>
+                                    <td><mark>{dayjs(result.result[`${field.name}`]).format('DD.MM.YYYY')}</mark></td>
                                 {:else}
                                     <td>{field.description}</td>
                                     {#if field.name == 'theoreticalBurningTemperatureOfCarbonCoke'}
@@ -126,6 +122,12 @@
                                 {/if}
                             </tr>
                         {/each}
+                        {#if result.input['day'] && result.input['day'] !== '0001-01-01T00:00:00'}
+                            <tr class="table-primary" transition:fade>
+                                <td>Данные за сутки</td>
+                                <td><mark>{dayjs(result.input['day']).format('DD.MM.YYYY')}</mark></td>
+                            </tr>
+                        {/if}
                     </tbody>
                 </table>
             {:else}
@@ -146,7 +148,7 @@
                                 <tr transition:fade>
                                     {#if field.name == 'resultDate'}
                                         <td>{field.description}</td>
-                                        <td><mark>{dayjs(result.result[`${field.name}`]).format('DD.MM.YYYY HH:mm:ss')}</mark></td>
+                                        <td><mark>{dayjs(result.result[`${field.name}`]).format('DD.MM.YYYY')}</mark></td>
                                     {:else}
                                         <td>{field.description}</td>
                                         {#if field.name == 'theoreticalBurningTemperatureOfCarbonCoke'}
@@ -158,6 +160,12 @@
                                 </tr>
                             {/if}
                         {/each}
+                        {#if result.input['day'] && result.input['day'] !== '0001-01-01T00:00:00'}
+                            <tr transition:fade>
+                                <td>Данные за сутки</td>
+                                <td><mark>{dayjs(result.input['day']).format('DD.MM.YYYY')}</mark></td>
+                            </tr>
+                        {/if}
                     </tbody>
                 </table>
             {/if}

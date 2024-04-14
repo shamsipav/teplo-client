@@ -119,7 +119,7 @@
                     <select class="form-select" bind:value={selectedFurnace} aria-label="Default select example" disabled={disabledFurnacesAndVariants || disabledFurnaces}>
                         <option selected disabled>Доменная печь</option>
                         {#each furnaces as furnace}
-                            <option value={furnace.id} selected={baseVariant?.furnaceId == furnace.id} >
+                            <option value={furnace.id} selected={baseVariant?.furnaceId == furnace.id}>
                                 ДП №{furnace.numberOfFurnace}
                             </option>
                         {/each}
@@ -128,19 +128,19 @@
             </div>
             <div class="me-3">
                 {#if dailes?.length > 0}
-                <p class="lead mb-2">Посуточная информация</p>
-                <select class="form-select mb-3" bind:value={selectedDayId} on:change={handleDayChange}>
-                    <option selected disabled>Выбрать за сутки</option>
-                    <option selected value="{NIL_UUID}">Не выбрано</option>
-                    {#each dailes as daily}
-                        {#if daily.furnaceId == selectedFurnace}
-                            <option value={daily.id}>
-                                {dayjs(daily.day).format('DD.MM.YYYY')}
-                            </option>
-                        {/if}
-                    {/each}
-                </select>
-            {/if}
+                    <p class="lead mb-2">Посуточная информация</p>
+                    <select class="form-select mb-3" bind:value={selectedDayId} on:change={handleDayChange}>
+                        <option selected disabled>Выбрать за сутки</option>
+                        <option selected value="{NIL_UUID}">Не выбрано</option>
+                        {#each dailes as daily}
+                            {#if daily.furnaceId == selectedFurnace}
+                                <option value={daily.id}>
+                                    {dayjs(daily.day).format('DD.MM.YYYY')}
+                                </option>
+                            {/if}
+                        {/each}
+                    </select>
+                {/if}
             </div>
         </div>
         {#if baseVariant}
@@ -231,6 +231,14 @@
                                     {/if}
                                 </tr>
                             {/each}
+                            {#if result.baseResult.input['day'] !== '0001-01-01T00:00:00' && result.comparativeResult.input['day'] !== '0001-01-01T00:00:00'}
+                                <tr class="table-primary" transition:fade>
+                                    <td>Данные за сутки</td>
+                                    <td><mark>{dayjs(result.baseResult.input['day']).format('DD.MM.YYYY')}</mark></td>
+                                    <td><mark>{dayjs(result.comparativeResult.input['day']).format('DD.MM.YYYY')}</mark></td>
+                                    <td></td>
+                                </tr>
+                            {/if}
                         </tbody>
                     </table>
                 {:else}
@@ -268,6 +276,14 @@
                                     </tr>
                                 {/if}
                             {/each}
+                            {#if result.baseResult.input['day'] !== '0001-01-01T00:00:00' && result.comparativeResult.input['day'] !== '0001-01-01T00:00:00'}
+                                <tr transition:fade>
+                                    <td>Данные за сутки</td>
+                                    <td><mark>{dayjs(result.baseResult.input['day']).format('DD.MM.YYYY')}</mark></td>
+                                    <td><mark>{dayjs(result.comparativeResult.input['day']).format('DD.MM.YYYY')}</mark></td>
+                                    <td></td>
+                                </tr>
+                            {/if}
                         </tbody>
                     </table>
                 {/if}

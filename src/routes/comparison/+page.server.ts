@@ -14,16 +14,26 @@ export async function load({ locals, cookies }) {
         const variantsResponse = await axios.get(`${API_URL}/variant`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
         const variantsResult: IResponse = variantsResponse.data
 
+        const dailyResponse = await axios.get(`${API_URL}/daily`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+        const dailyResult: IResponse = dailyResponse.data
+
+        const furnacesResponse = await axios.get(`${API_URL}/furnace`, { headers: { 'Authorization': `Bearer ${token}` }, httpsAgent })
+        const furnacesResult: IResponse = furnacesResponse.data
+
         return {
             authorized: true,
-            variants: variantsResult.result
+            variants: variantsResult.result,
+            dailes: dailyResult.result,
+            furnaces: furnacesResult.result,
         }
     } catch(error) {
         // TODO: Add logging
         console.log(error.response.data.errorMessage)
         return {
             authorized: true,
-            variants: {}
+            variants: {},
+            furnaces: {},
+            dailes: {}
         }
     }
 }

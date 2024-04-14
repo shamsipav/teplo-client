@@ -1,9 +1,9 @@
 <script lang="ts">
     import axios from 'axios'
     import dayjs from 'dayjs'
-    import { Form, Toast } from '$components'
+    import { Form, Modal, Toast } from '$components'
     import { API_URL, FURNACE_FIELDS } from '$lib/consts'
-    import type { IFurnace, IFurnaceBase, IResponse, IUser } from '$lib/types'
+    import type { IFurnace, IFurnaceBase, IMaterial, IResponse, IUser, IModal } from '$lib/types'
     // @ts-ignore
     import type { PageData } from './$types'
     import { getCookie, isGuidNullOrEmpty } from '$lib/utils'
@@ -12,11 +12,16 @@
 
     export let data: PageData
 
+    let materialModal: IModal
+
     let user: IUser = data.user
     let defaultState: IFurnaceBase = data.default
     let variants: IFurnaceBase[] = data.variants
     let furnaces: IFurnace[] = data.furnaces
     let dailes: IFurnaceBase[] = data.dailes
+    let materials: IMaterial[] = data.materials
+    const materialsWithValue = materials?.map(material => ({ ...material, value: 0})) ?? null // для возможности суммировать базовое значение
+
     let saveVariant = false
 
     let notifyMessage = ''
@@ -109,11 +114,51 @@
             defaultState = data.default
         }
     }
+
+    let specificConsumptionOfZRM = 0
+    const calculateTotal = () => {
+        // @ts-ignore
+        specificConsumptionOfZRM = materialsWithValue.reduce((acc, material) => acc + parseFloat(material.value), 0)
+    }
+
+    const materialsChoosed = () => {
+        materialModal.close()
+        notifyMessage = 'Значение удельного расхода ЖРМ обновлено'
+        setTimeout(() => notifyMessage = '', 2500)
+    }
 </script>
 
 <svelte:head>
 	<title>TeploClient: Главная</title>
 </svelte:head>
+
+<Modal bind:this={materialModal} title="Выбор шихтовых материалов" on:confirm={materialsChoosed}>
+    {#if materialsWithValue?.length > 0}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Материал</th>
+                    <th scope="col">Базовое значение, кг/т чугуна</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#each materialsWithValue as material}
+                    <tr>
+                        <td>{material.name}</td>
+                        <td>
+                            <input type="text" class="form-control" autocomplete="off" bind:value={material.value} on:change={calculateTotal} required>
+                        </td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+        <p class="lead">Удельный расход ЖРМ: <b>{specificConsumptionOfZRM}</b> кг/т чугуна</p>
+    {:else}
+        <p>В справочнике еще нет материалов, задайте расход вручную</p>
+        <p class="lead">Удельный расход ЖРМ, кг/т чугуна</p>
+        <input type="text" class="form-control" autocomplete="off" bind:value={specificConsumptionOfZRM} required>
+    {/if}
+</Modal>
 
 <div class="container">
     <p class="h3 mb-3">Расчет базового периода</p>
@@ -170,7 +215,7 @@
             </div>
         </div>
         {#if variants?.length > 0 && !isGuidNullOrEmpty(selectedVariant)}
-            <button type="button" class="btn btn-outline-danger btn-sm" on:click={() => deleteVariant(selectedVariant)}>Удалить вариант исходных данных</button>
+            <button type="button" class="btn btn-outline-danger btn-sm mb-2" on:click={() => deleteVariant(selectedVariant)}>Удалить вариант исходных данных</button>
         {/if}
     {/if}
     {#if Object.keys(defaultState).length > 0}
@@ -181,6 +226,9 @@
             <input type="string" name="day" value={defaultState.day} hidden>
             <input type="string" name="saveDate" value={defaultState.saveDate} hidden>
             <input type="string" name="furnaceId" value={selectedFurnace ?? NIL_UUID} hidden>
+            {#if user}
+                <button type="button" class="btn btn-outline-secondary" on:click={materialModal.open}>Выбрать шихтовые материалы</button>
+            {/if}
             <div class="d-flex align-items-start">
                 <table class="table">
                     <thead>
@@ -193,12 +241,21 @@
                         {#each FURNACE_FIELDS.slice(0, user ? FURNACE_FIELDS.length - 11 : FURNACE_FIELDS.length / 2) as field, i}
                             {#if user}
                                 {#if i > 11}
-                                    <tr>
-                                        <td>{field.description}</td>
-                                        <td>
-                                            <input type="text" class="form-control" name={field.name} value={defaultState ? defaultState[`${field.name}`] : 0} autocomplete="off" required>
-                                        </td>
-                                    </tr>
+                                    {#if field.name == 'specificConsumptionOfZRM'}
+                                        <tr>
+                                            <td>{field.description}2222</td>
+                                            <td>
+                                                <input type="text" class="form-control material" name={field.name} value={1} readonly required>
+                                            </td>
+                                        </tr>
+                                    {:else}
+                                        <tr>
+                                            <td>{field.description}</td>
+                                            <td>
+                                                <input type="text" class="form-control" name={field.name} value={defaultState ? defaultState[`${field.name}`] : 0} autocomplete="off" required>
+                                            </td>
+                                        </tr>
+                                    {/if}
                                 {/if}
                             {:else}
                                 <tr>
@@ -263,3 +320,11 @@
         <Toast variant="green">{notifyMessage}</Toast>
     </div>
 {/if}
+
+
+<style>
+    .material {
+        background-color: var(--bs-form-control-disabled-bg);
+        opacity: 1;
+    }
+</style>

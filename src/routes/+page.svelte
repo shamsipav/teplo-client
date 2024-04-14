@@ -8,7 +8,7 @@
          intro.setOptions({
              steps: [
                  {
-                     title: 'Welcome',
+                     title: 'Добро пожаловать!',
                      intro: 'Welcome to the tutorial',
                  },
                  {
@@ -21,7 +21,7 @@
                  }
              ]
          })
-         intro.setOption('dontShowAgain', false)
+         intro.setOption('dontShowAgain', true)
          intro.start()
      })
 </script>
@@ -33,20 +33,28 @@
 <div class="container all">
     <div class="header d-flex justify-content-center mb-4">
         <img class="me-4" src="/img/urfu-logo.png" alt="urfu-logo">
-        <img src="/img/tim-logo.png" alt="tim-logo">
+        <img src="/img/tim-new-logo.svg" alt="tim-logo">
     </div>
-    <h1 class="h1 text-center" data-intro='Hello step one!'>Информационно-моделирующая система<br/> теплового режима доменной плавки</h1>
-    <div class="text-center mt-5">
+    <h1 class="h1 text-center mb-5" data-intro='Hello step one!'>Информационно-моделирующая система<br/> теплового режима доменной плавки</h1>
+    <div class="text-center mb-5">
+        <img src="/img/icon-furnace.png" alt="icon-furnace" height="200">
+    </div>
+    <div class="text-center mb-5">
         <a href="/base" class="btn btn-outline-secondary">Перейти к базовому режиму</a>
     </div>
-    <div id="step1">Step 1 Content</div>
-    <div id="step2">Step 2 Content</div>
+    <div class="text-center">
+        <p class="lead mb-2">Магистерская диссертация студента группы НМТМ-223901, Шамсимухаметова Павла Раифовича</p>
+        <p class="lead">Под руководством профессора, доктора технических наук, Лаврова Владислава Васильевича</p>
+    </div>
+    <!-- <div id="step1">Step 1 Content</div>
+    <div id="step2">Step 2 Content</div> -->
 </div>
 
 <style>
     .all {
         padding-top: 6em;
         z-index: 100;
+        height: 100%;
     }
 
     .btn {

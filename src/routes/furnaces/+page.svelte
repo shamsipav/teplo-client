@@ -1,11 +1,12 @@
 <script lang="ts">
     import axios, { type AxiosResponse } from 'axios'
+    // @ts-ignore
     import type { PageData } from './$types'
     import type { IModal, IResponse, IFurnaceBase } from '$lib/types'
     import { API_URL, FURNACE_FIELDS} from '$lib/consts'
     import { Toast, Modal } from '$components'
     import { fade } from 'svelte/transition'
-    import { getCookie } from '$lib/utils'
+    import { getCookie, isGuidNullOrEmpty } from '$lib/utils'
 
     let confirmDeleteModal: IModal
 
@@ -36,7 +37,7 @@
             loaderShow = true
             let response: AxiosResponse<any, any> = undefined
             let responseResult: IResponse = undefined
-            if (data.id > 0) {
+            if (!isGuidNullOrEmpty(data.id)) {
                 response = await axios.put(`${API_URL}/furnace`, data, { headers: { 'Authorization': `Bearer ${token}` } })
                 responseResult = response.data
                 const furnace: IFurnaceBase = responseResult.result
@@ -78,20 +79,20 @@
     }
 
     let deleteFurnaceNumber: number
-    let deleteFurnaceId: number
+    let deleteFurnaceId: string
     const showConfirmDeleteModal = (furnace: IFurnaceBase) => {
         deleteFurnaceNumber = furnace.numberOfFurnace
         deleteFurnaceId = furnace.id
         confirmDeleteModal.open()
     }
 
-    const confirmDeleteHandler = async (furnaceId: number) => {
+    const confirmDeleteHandler = async (furnaceId: string) => {
         confirmDeleteModal.close()
         await deleteFurnace(furnaceId)
     }
 
-    const deleteFurnace = async (furnaceId: number) => {
-        if (furnaceId !== 0) {
+    const deleteFurnace = async (furnaceId: string) => {
+        if (!isGuidNullOrEmpty(furnaceId)) {
             const token = getCookie('token')
             try {
                 loaderShow = true
