@@ -109,7 +109,7 @@
                     notifyVisible = false
                 }, 2500)
             } catch (error) {
-                successMessage = ''
+                notifyVisible = true
                 errorMessage = error.response.data.errorMessage
                 console.log(`Не удалось удалить печь из справочника печей: ${error}`)
 

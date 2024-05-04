@@ -14,6 +14,8 @@
 
     let materialModal: IModal
 
+    let confirmDeleteVariantModal: IModal
+
     let user: IUser = data.user
     let defaultState: IFurnaceBase = data.default
     let variants: IFurnaceBase[] = data.variants
@@ -172,11 +174,20 @@
 
         materialObjects = buildMaterialsObjectsArray(materialsWithValue, isGuidNullOrEmpty(selectedDayId) ? selectedVariant : selectedDayId)
     }
+
+    const confirmDeleteVariantHandler = async (variantId: string) => {
+        confirmDeleteVariantModal.close()
+        await deleteVariant(variantId)
+    }
 </script>
 
 <svelte:head>
 	<title>TeploClient: Главная</title>
 </svelte:head>
+
+<Modal bind:this={confirmDeleteVariantModal} title="Подтвердите удаление" on:confirm={() => confirmDeleteVariantHandler(selectedVariant)}>
+    <p>Вы действительно хотите удалить данный вариант исходных данных?</p>
+</Modal>
 
 <Modal hasFooter={!disabledMaterials} bind:this={materialModal} title="Шихтовые материалы" on:confirm={materialsChoosed}>
     {#if materialsWithValue?.length > 0}
@@ -261,7 +272,7 @@
             </div>
         </div>
         {#if variants?.length > 0 && !isGuidNullOrEmpty(selectedVariant)}
-            <button type="button" class="btn btn-outline-danger btn-sm mb-2" on:click={() => deleteVariant(selectedVariant)}>Удалить вариант исходных данных</button>
+            <button type="button" class="btn btn-outline-danger btn-sm mb-2" on:click={confirmDeleteVariantModal.open}>Удалить вариант исходных данных</button>
         {/if}
     {/if}
     {#if Object.keys(defaultState).length > 0}

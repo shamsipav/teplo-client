@@ -40,9 +40,9 @@
                 body: JSON.stringify(data)
             })
 
-            const jsonResult: IResponse = await res.json()
-
             if (res.ok) {
+                const jsonResult: IResponse = await res.json()
+
                 loaderShow = false
                 errorMessage = ''
                 successMessage = jsonResult.successMessage
@@ -63,7 +63,7 @@
             }
         } catch (error) {
             loaderShow = false
-            console.error(error)
+            console.log(error)
             errorMessage = 'Попробуйте повторить запрос позже'
         }
     }

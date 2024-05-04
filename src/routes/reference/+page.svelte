@@ -41,7 +41,7 @@
 
         try {
             loaderShow = true
-            const response = await axios.post(`${API_URL}/reference`, referenceObject, { headers: { 'Authorization': `Bearer ${token}` } })
+            const response = await axios.put(`${API_URL}/reference`, referenceObject, { headers: { 'Authorization': `Bearer ${token}` } })
             const responseResult: IResponse = response.data
             reference = responseResult.result
             errorMessage = ''

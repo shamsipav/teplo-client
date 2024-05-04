@@ -44,8 +44,6 @@
 
     onMount(() => token = getCookie('token'))
 
-    console.log(dailes)
-
     let deleteDayInfoId: string
     const showConfirmDeleteModal = (currentDayInfoId: string) => {
         deleteDayInfoId = currentDayInfoId
@@ -157,7 +155,7 @@
         materialObjects = buildMaterialsObjectsArray(materialsWithValue, currentDayInfo.id)
     }
 
-    let specificConsumptionOfZRM = currentDayInfo.specificConsumptionOfZRM
+    let specificConsumptionOfZRM = currentDayInfo?.specificConsumptionOfZRM
     const calculateTotal = () => {
         // @ts-ignore
         specificConsumptionOfZRM = materialsWithValue.reduce((acc, material) => acc + parseFloat(material.value), 0)
