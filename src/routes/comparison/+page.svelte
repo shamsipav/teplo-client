@@ -126,8 +126,8 @@
             <p class="h5 mb-3">Базовый период</p>
             <div class="d-flex mb-3">
                 <div class="me-3">
-                    <p class="lead mb-2">Варианты исходных данных</p>
                     {#if variants?.length > 0}
+                        <p class="lead mb-2">Варианты исходных данных</p>
                         <div class="row">
                             <div class="col">
                                 <select class="form-select mb-3" bind:value={baseVariantSelected} aria-label="Default select example" on:change={baseVariantHandler} disabled={disabledBaseVariantsAndFurnaces}>
@@ -141,21 +141,25 @@
                                 </select>
                             </div>
                         </div>
+                    {:else}
+                        <p>Отсутствуют сохраненные варианты исходных данных</p>
                     {/if}
                 </div>
                 <div class="me-3">
-                    {#if furnaces?.length > 0}
-                        <p class="lead mb-2">Доменная печь</p>
-                        <select class="form-select" bind:value={selectedBaseFurnace} aria-label="Default select example" disabled={disabledBaseFurnacesAndDaily || disabledBaseVariantsAndFurnaces}>
-                            <option selected disabled>Доменная печь</option>
-                            <option value="{NIL_UUID}" selected>Не выбрана</option>
-                            {#each furnaces as furnace}
-                                <!-- Выбирается исходя из варианта исходных данных базового периода -->
-                                <option value={furnace.id} selected={variants.find(v => v.id == baseVariantSelected)?.furnaceId == furnace.id}>
-                                    ДП №{furnace.numberOfFurnace}
-                                </option>
-                            {/each}
-                        </select>
+                    {#if variants?.length > 0 || dailes?.length > 0}
+                        {#if furnaces?.length > 0}
+                            <p class="lead mb-2">Доменная печь</p>
+                            <select class="form-select" bind:value={selectedBaseFurnace} aria-label="Default select example" disabled={disabledBaseFurnacesAndDaily || disabledBaseVariantsAndFurnaces}>
+                                <option selected disabled>Доменная печь</option>
+                                <option value="{NIL_UUID}" selected>Не выбрана</option>
+                                {#each furnaces as furnace}
+                                    <!-- Выбирается исходя из варианта исходных данных базового периода -->
+                                    <option value={furnace.id} selected={variants.find(v => v.id == baseVariantSelected)?.furnaceId == furnace.id}>
+                                        ДП №{furnace.numberOfFurnace}
+                                    </option>
+                                {/each}
+                            </select>
+                        {/if}
                     {/if}
                 </div>
                 <div class="me-3">
@@ -180,8 +184,8 @@
             <p class="h5 mb-3">Сравнительный период</p>
             <div class="d-flex">
                 <div class="me-3">
-                    <p class="lead mb-2">Варианты исходных данных</p>
                     {#if variants?.length > 0}
+                        <p class="lead mb-2">Варианты исходных данных</p>
                         <div class="row">
                             <div class="col">
                                 <select class="form-select mb-3" bind:value={compVariantSelected} aria-label="Default select example" on:change={compVariantHandler} disabled={disabledCompVariantsAndFurnaces}>
@@ -195,21 +199,25 @@
                                 </select>
                             </div>
                         </div>
+                    {:else}
+                        <p>Отсутствуют сохраненные варианты исходных данных</p>
                     {/if}
                 </div>
                 <div class="me-3">
-                    {#if furnaces?.length > 0}
-                        <p class="lead mb-2">Доменная печь</p>
-                        <select class="form-select" bind:value={selectedCompFurnace} aria-label="Default select example" disabled={disabledCompFurnacesAndDaily || disabledCompVariantsAndFurnaces}>
-                            <option selected disabled>Доменная печь</option>
-                            <option value="{NIL_UUID}" selected>Не выбрана</option>
-                            {#each furnaces as furnace}
-                                <!-- Выбирается исходя из варианта исходных данных базового периода -->
-                                <option value={furnace.id} selected={variants.find(v => v.id == compVariantSelected)?.furnaceId == furnace.id}>
-                                    ДП №{furnace.numberOfFurnace}
-                                </option>
-                            {/each}
-                        </select>
+                    {#if variants?.length > 0 || dailes?.length > 0}
+                        {#if furnaces?.length > 0}
+                            <p class="lead mb-2">Доменная печь</p>
+                            <select class="form-select" bind:value={selectedCompFurnace} aria-label="Default select example" disabled={disabledCompFurnacesAndDaily || disabledCompVariantsAndFurnaces}>
+                                <option selected disabled>Доменная печь</option>
+                                <option value="{NIL_UUID}" selected>Не выбрана</option>
+                                {#each furnaces as furnace}
+                                    <!-- Выбирается исходя из варианта исходных данных базового периода -->
+                                    <option value={furnace.id} selected={variants.find(v => v.id == compVariantSelected)?.furnaceId == furnace.id}>
+                                        ДП №{furnace.numberOfFurnace}
+                                    </option>
+                                {/each}
+                            </select>
+                        {/if}
                     {/if}
                 </div>
                 <div class="me-3">

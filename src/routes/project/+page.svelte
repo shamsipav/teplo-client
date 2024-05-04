@@ -110,20 +110,22 @@
                         {/each}
                     </select>
                 {:else}
-                    <p class="mt-3">Нет сохраненных вариантов</p>
+                    <p class="mt-3">Отсутствуют сохраненные варианты исходных данных</p>
                 {/if}
             </div>
             <div class="me-3">
-                {#if furnaces?.length > 0}
-                    <p class="lead mb-2">Доменная печь</p>
-                    <select class="form-select" bind:value={selectedFurnace} aria-label="Default select example" disabled={disabledFurnacesAndVariants || disabledFurnacesAndDaily}>
-                        <option selected disabled>Доменная печь</option>
-                        {#each furnaces as furnace}
-                            <option value={furnace.id} selected={baseVariant?.furnaceId == furnace.id}>
-                                ДП №{furnace.numberOfFurnace}
-                            </option>
-                        {/each}
-                    </select>
+                {#if variants?.length > 0 || dailes?.length > 0}
+                    {#if furnaces?.length > 0}
+                        <p class="lead mb-2">Доменная печь</p>
+                        <select class="form-select" bind:value={selectedFurnace} aria-label="Default select example" disabled={disabledFurnacesAndVariants || disabledFurnacesAndDaily}>
+                            <option selected disabled>Доменная печь</option>
+                            {#each furnaces as furnace}
+                                <option value={furnace.id} selected={baseVariant?.furnaceId == furnace.id}>
+                                    ДП №{furnace.numberOfFurnace}
+                                </option>
+                            {/each}
+                        </select>
+                    {/if}
                 {/if}
             </div>
             <div class="me-3">
