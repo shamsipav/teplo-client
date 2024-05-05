@@ -176,3 +176,9 @@ export const buildMaterialsObjectsArray = (materialsWithValue: any[], furnaceBas
 
     return materialObjects
 }
+
+export const correctFieldWord = (number) => {
+  const forms = ['поле', 'поля', 'полей'];
+  const formIndex = number % 100 > 4 && number % 100 < 20 ? 2 : [2, 0, 1, 1, 1, 2][number % 10];
+  return number + ' ' + forms[formIndex];
+}

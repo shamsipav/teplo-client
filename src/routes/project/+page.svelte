@@ -5,7 +5,7 @@
     import type { IFurnace, IFurnaceBase, IResponse, IUnionFullResult } from '$lib/types'
     import { fade } from 'svelte/transition'
     import axios from 'axios'
-    import { exportResultToExcel, getCookie, isGuidNullOrEmpty } from '$lib/utils'
+    import { correctFieldWord, exportResultToExcel, getCookie, isGuidNullOrEmpty } from '$lib/utils'
     import { Toast } from '$components'
     import { NIL as NIL_UUID } from 'uuid'
 
@@ -62,7 +62,9 @@
             setTimeout(() => notifyMessage = '', 2500)
         } catch (error) {
             successMessage = ''
-            errorMessage = 'Не удалось выполнить расчет проектного периода'
+            errorMessage = error.response.data.errorMessage ?? 'Не удалось выполнить расчет проектного периода'
+            result = null
+            setTimeout(() => errorMessage = '', 3500)
             console.log(`Не удалось выполнить расчет проектного периода: ${error}`)
         }
     }
@@ -85,6 +87,20 @@
             disabledFurnacesAndVariants = false
             baseVariant = null
             result = null
+        }
+    }
+
+    let changedCount = 0
+    const handleChange = (e) => {
+        const prevValue = e.target.classList[1]
+        const currentValue = e.target.value
+
+        if (prevValue !== currentValue) {
+            e.target.classList.add('modified')
+            changedCount++
+        } else {
+            e.target.classList.remove('modified')
+            changedCount--
         }
     }
 </script>
@@ -163,7 +179,7 @@
                                     {baseVariant[`${field.name}`]}
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" name={field.name} value={baseVariant[`${field.name}`]} autocomplete="off" required>
+                                    <input type="text" class="form-control {baseVariant[field.name]}" name={field.name} value={baseVariant[`${field.name}`]} autocomplete="off" required on:change={handleChange}>
                                 </td>
                             </tr>
                         {/each}
@@ -171,6 +187,11 @@
                 </table>
                 <div class="d-flex align-items-center">
                     <button type="submit" class="btn btn-success">Рассчитать</button>
+                    {#if changedCount == 0}
+                        <p class="mb-0 ms-3">Отсутствуют изменения для проектного периода</p>
+                    {:else}
+                        <p class="mb-0 ms-3">Изменено {correctFieldWord(changedCount)}</p>
+                    {/if}
                 </div>
             </form>
             {#if errorMessage}
@@ -304,5 +325,9 @@
 <style>
     .day-info {
         font-weight: 600;
+    }
+
+    .modified {
+        background-color: #ffeb3b5e;
     }
 </style>

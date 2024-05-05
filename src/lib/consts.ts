@@ -125,7 +125,7 @@ export const REFERENCE_FIELDS =
     { name: 'reductionMassFractionOfSeraInChugun', description: 'Снижение массовой доли серы в чугуне на 0,1 %' },
     { name: 'increaseMassFractionOfPhosphorusInChugun', description: 'Увеличение массовой доли фосфора в чугуне на 0,1 %' },
     { name: 'increaseMassFractionOfManganeseInChugun', description: 'Увеличение массовой доли марганца в чугуне на 0,1 %' },
-    { name: 'increaseMassFractionOfTitanInChugun', description: 'Увеличение массовой доли титана в чугуне на 0,1 % (???)' },
+    //{ name: 'increaseMassFractionOfTitanInChugun', description: 'Увеличение массовой доли титана в чугуне на 0,1 % (???)' },
     { name: 'increaseBlastHumidity', description: 'Увеличение влажности дутья на 1 г/м3 (без увеличения температуры дутья)' },
     { name: 'increaseNaturalGasCunsimption', description: 'Увеличение расхода природного газа на 1 м3/т' },
     { name: 'outputFromLimestoneCharge', description: 'Вывод из шихты 10 кг/т известняка' },
