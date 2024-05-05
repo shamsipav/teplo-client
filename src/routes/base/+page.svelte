@@ -13,7 +13,7 @@
     export let data: PageData
 
     let materialModal: IModal
-
+    let furnaceParamsModal: IModal
     let confirmDeleteVariantModal: IModal
 
     let user: IUser = data.user
@@ -189,6 +189,12 @@
         confirmDeleteVariantModal.close()
         await deleteVariant(variantId)
     }
+
+    let currentFurnaceDataForModal: IFurnace
+    const furnaceParamsHandler = () => {
+        currentFurnaceDataForModal = furnaces.find(f => f.id == selectedFurnace)
+        furnaceParamsModal.open()
+    }
 </script>
 
 <svelte:head>
@@ -197,6 +203,14 @@
 
 <Modal bind:this={confirmDeleteVariantModal} title="Подтвердите удаление" on:confirm={() => confirmDeleteVariantHandler(selectedVariant)}>
     <p>Вы действительно хотите удалить данный вариант исходных данных?</p>
+</Modal>
+
+<Modal bind:this={furnaceParamsModal} hasFooter={false} title="Параметры ДП №{currentFurnaceDataForModal?.numberOfFurnace}" on:confirm={furnaceParamsModal.close}>
+    {#each FURNACE_FIELDS as field, i}
+        {#if i < 11}
+            <p><b>{field.description}</b>: {currentFurnaceDataForModal[`${field.name}`]}</p>
+        {/if}
+    {/each}
 </Modal>
 
 <Modal hasFooter={!disabledMaterials} bind:this={materialModal} title="Шихтовые материалы" on:confirm={materialsChoosed}>
@@ -253,7 +267,7 @@
             <div class="me-3">
                 {#if furnaces?.length > 0}
                     <p class="lead mb-2">Доменная печь</p>
-                    <select class="form-select mb-3" bind:value={selectedFurnace} aria-label="Default select example" disabled={disabledFurnacesAndVariants || disabledFurnaces}>
+                    <select class="form-select" bind:value={selectedFurnace} aria-label="Default select example" disabled={disabledFurnacesAndVariants || disabledFurnaces}>
                         <option selected disabled>Доменная печь</option>
                         {#each furnaces as furnace}
                             <option value={furnace.id} selected={defaultState.furnaceId == furnace.id}>
@@ -261,6 +275,8 @@
                             </option>
                         {/each}
                     </select>
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <p class="label ps-1 pt-1 mb-1" on:click={furnaceParamsHandler}>Параметры печи</p>
                 {/if}
             </div>
             <div>
@@ -294,7 +310,7 @@
             <input type="string" name="saveDate" value={defaultState.saveDate} hidden>
             <input type="string" name="furnaceId" value={selectedFurnace ?? NIL_UUID} hidden>
             {#if user}
-                <button type="button" class="btn btn-outline-secondary" on:click={materialModal.open}>
+                <button type="button" class="btn mt-1 mb-2 btn-outline-secondary" on:click={materialModal.open}>
                     {disabledMaterials ? 'Показать' : 'Выбрать'} шихтовые материалы
                 </button>
             {/if}
@@ -389,3 +405,16 @@
         <Toast variant="green">{notifyMessage}</Toast>
     </div>
 {/if}
+
+<style>
+    .label {
+        font-size: 0.8rem;
+        color: rgb(50, 102, 74);
+        cursor: pointer;
+    }
+
+    .label:hover {
+        text-decoration: underline;
+        user-select: none;
+    }
+</style>
