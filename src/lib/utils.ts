@@ -163,14 +163,14 @@ export const exportResultToExcel = async (result: any, union = false, mode: 'pro
     }
 }
 
-export const buildMaterialsObjectsArray = (materialsWithValue: any[], workParamsId: string) => {
+export const buildMaterialsObjectsArray = (materialsWithValue: any[], furnaceBaseParamId: string) => {
     let materialObjects = []
 
     materialsWithValue.forEach(material => {
         const materialId = material.id
         const consumption = material.value
 
-        const materialObject = { MaterialId: materialId, Consumption: consumption, WorkParamsId: workParamsId }
+        const materialObject = { MaterialId: materialId, Consumption: consumption, FurnaceBaseParamId: furnaceBaseParamId }
         materialObjects = [...materialObjects, materialObject]
     })
 
