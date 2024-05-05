@@ -59,6 +59,10 @@
             // Пересчитываем общий удельный расход ЖРМ
             calculateTotal()
 
+            if (!choosedMaterials || choosedMaterials?.length == 0) {
+                specificConsumptionOfZRM = defaultState.specificConsumptionOfZRM
+            }
+
             notifyMessage = `Вариант "${defaultState.name === null ? 'По умолчанию' : defaultState.name}" ${defaultState.saveDate ? 'от ' + dayjs(defaultState.saveDate).format('DD.MM.YYYY') : ''} успешно загружен`
             setTimeout(() => notifyMessage = '', 2500)
         } else {
@@ -76,8 +80,10 @@
                 const responseResult: IResponse = response.data
                 variants = responseResult.result
 
-                if (saveVariant == true && variants.length > 0)
+                if (saveVariant == true && variants.length > 0) {
                     selectedVariant = variants[variants.length - 1].id
+                    getCurrentVariant(selectedVariant);
+                }
 
             } else {
                 console.log('Не удалось получить токен для обновления списка вариантов')
@@ -150,6 +156,10 @@
 
             // Пересчитываем общий удельный расход ЖРМ
             calculateTotal()
+
+            if (choosedMaterials?.length == 0) {
+                specificConsumptionOfZRM = defaultState.specificConsumptionOfZRM
+            }
 
             disabledMaterials = true
         }

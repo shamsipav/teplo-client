@@ -106,6 +106,7 @@
         const responseResult: IResponse = response.data
 
         currentDayInfo = responseResult.result
+        console.log(currentDayInfo)
         selectedDate = currentDayInfo.day.split('T')[0]
         selectedFurnace = furnaces.find(furnace => furnace.id == currentDayInfo.furnaceId).id
 
@@ -114,8 +115,9 @@
         if (choosedMaterials?.length > 0)
             choosedMaterials.forEach(choosed => {
                 materialsWithValue.forEach(material => {
-                    if (material.id == choosed.materialId)
+                    if (material.id == choosed.materialId) {
                         material.value = choosed.consumption
+                    }
                 })
             })
         else
@@ -125,6 +127,10 @@
 
         // Пересчитываем общий удельный расход ЖРМ
         calculateTotal()
+
+        if (!choosedMaterials || choosedMaterials?.length == 0) {
+            specificConsumptionOfZRM = currentDayInfo.specificConsumptionOfZRM
+        }
 
         modalTitle = `Данные о работе доменной печи №${furnaces.find(f => f.id == currentDayInfo.furnaceId).numberOfFurnace} за ${dayjs(currentDayInfo.day).format('DD.MM.YYYY')}`
         dailyInfoOpened = true
@@ -175,6 +181,7 @@
         {#if selectedFurnace !== null}
             <input type="string" name="furnaceId" value={selectedFurnace} hidden>
         {/if}
+        <input type="string" name="id" value={currentDayInfo.id} hidden>
         <div class="d-flex">
             <div class="me-3">
                 {#if furnaces?.length > 0}
@@ -195,7 +202,7 @@
             </div>
         </div>
         {#if !isGuidNullOrEmpty(currentDayInfo.id)}
-            <button type="button" class="btn btn-outline-danger btn-sm mb-3" on:click={() => showConfirmDeleteModal(currentDayInfo.id)}>Удалить данные за эти сутки</button>
+            <button type="button" class="btn d-block btn-outline-danger btn-sm mb-3" on:click={() => showConfirmDeleteModal(currentDayInfo.id)}>Удалить данные за эти сутки</button>
         {/if}
         <button type="button" class="btn btn-outline-secondary" on:click={materialModal.open}>Выбрать шихтовые материалы</button>
         <div class="d-flex align-items-start">

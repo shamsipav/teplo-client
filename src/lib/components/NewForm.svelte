@@ -40,8 +40,9 @@
                 body: JSON.stringify(data)
             })
 
+            const jsonResult: IResponse = await res.json()
+
             if (res.ok) {
-                const jsonResult: IResponse = await res.json()
 
                 loaderShow = false
                 errorMessage = ''

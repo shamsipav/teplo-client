@@ -110,6 +110,7 @@
                     notifyVisible = false
                 }, 2500)
             } catch (error) {
+                notifyVisible = true
                 successMessage = ''
                 errorMessage = error.response.data.errorMessage
                 console.log(`Не удалось удалить материал из справочника шихтовых материалов: ${error}`)
