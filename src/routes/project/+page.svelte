@@ -91,16 +91,25 @@
     }
 
     let changedCount = 0
+    let changedProperties = new Map()
     const handleChange = (e) => {
         const prevValue = e.target.classList[1]
         const currentValue = e.target.value
 
         if (prevValue !== currentValue) {
             e.target.classList.add('modified')
-            changedCount++
-        } else {
+            if (!changedProperties.has(e.target.name)) {
+                changedProperties.set(e.target.name, PROJECT_FIELDS.find(x => x.name === e.target.name).description)
+                changedCount++
+            }
+        } 
+        else 
+        {
             e.target.classList.remove('modified')
-            changedCount--
+            if (changedProperties.has(e.target.name)) {
+                changedProperties.delete(e.target.name)
+                changedCount--
+            }
         }
     }
 </script>
