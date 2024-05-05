@@ -211,6 +211,7 @@
             <p><b>{field.description}</b>: {currentFurnaceDataForModal[`${field.name}`]}</p>
         {/if}
     {/each}
+    <a href="/furnaces">Перейти к справочнику печей</a>
 </Modal>
 
 <Modal hasFooter={!disabledMaterials} bind:this={materialModal} title="Шихтовые материалы" on:confirm={materialsChoosed}>
@@ -239,6 +240,7 @@
         <p class="lead">Удельный расход ЖРМ, кг/т чугуна</p>
         <input type="text" class="form-control" autocomplete="off" bind:value={specificConsumptionOfZRM} required>
     {/if}
+    <a href="/materials">Перейти к справочнику шихтовых материалов</a>
 </Modal>
 
 <div class="container">
