@@ -2,14 +2,16 @@
     import dayjs from 'dayjs'
     import type { PageData } from './$types'
     import { API_URL, FURNACE_FIELDS, PROJECT_FIELDS, RESULT_FIELDS } from '$lib/consts'
-    import type { IFurnace, IFurnaceBase, IResponse, IUnionFullResult } from '$lib/types'
+    import type { IFurnace, IFurnaceBase, IModal, IResponse, IUnionFullResult } from '$lib/types'
     import { fade } from 'svelte/transition'
     import axios from 'axios'
     import { correctFieldWord, exportResultToExcel, getCookie, isGuidNullOrEmpty } from '$lib/utils'
-    import { Toast } from '$components'
+    import { Toast, Chart, Modal } from '$components'
     import { NIL as NIL_UUID } from 'uuid'
 
     export let data: PageData
+
+    let chartModal: IModal
 
     let authorized: boolean = data.authorized
     let variants: IFurnaceBase[] = data.variants
@@ -112,11 +114,39 @@
             }
         }
     }
+
+    let indexOfTheBottomBase: number
+    let indexOfTheBottomProject: number
+
+    let indexOfTheTopBase: number
+    let indexOfTheTopProject: number
+
+    let temperatureBase: number
+    let temperatureProject: number
+    const showChartModal = (result: IUnionFullResult) => {
+        indexOfTheBottomBase = result.baseResult.result['indexOfTheBottomOfTheFurnace']
+        indexOfTheBottomProject = result.comparativeResult.result['indexOfTheBottomOfTheFurnace']
+
+        indexOfTheTopBase = result.baseResult.result['indexOfTheFurnaceTop']
+        indexOfTheTopProject = result.comparativeResult.result['indexOfTheFurnaceTop']
+
+        temperatureBase = result.baseResult.result['theoreticalBurningTemperatureOfCarbonCoke']
+        temperatureProject = result.comparativeResult.result['theoreticalBurningTemperatureOfCarbonCoke']
+        chartModal.open()
+    }
 </script>
 
 <svelte:head>
 	<title>TeploClient: Проектный режим</title>
 </svelte:head>
+
+<Modal bind:this={chartModal} hasFooter={false} size="modal-xl" title="Результаты расчета" on:confirm={chartModal.close}>
+    <div class="d-flex">
+        <Chart chartIndex={1} baseValue={indexOfTheBottomBase} compValue={indexOfTheBottomProject} paramName="Индекс низа" />
+        <Chart chartIndex={2} baseValue={indexOfTheTopBase} compValue={indexOfTheTopProject} paramName="Индекс верха" />
+        <Chart chartIndex={3} baseValue={temperatureBase} compValue={temperatureProject} paramName="Теор. температура горения" />
+    </div>
+</Modal>
 
 <div class="container">
     <p class="h3 mb-3">Проектный режим</p>
@@ -214,6 +244,7 @@
                     {fullResults ? 'Краткая форма' : 'Полная форма'}
                 </button>
                 <button type="button" class="btn btn-light mb-3" on:click={() => exportResultToExcel(result, true, 'project')}>Экспорт в Excel</button>
+                <button type="button" class="btn btn-light mb-3" on:click={() => showChartModal(result)}>Графический вид</button>
                 {#if result.baseResult.input['day'] && result.baseResult.input['day'] !== '0001-01-01T00:00:00'}
                     <p class="day-info">По данным работы доменной печи за сутки {dayjs(result.baseResult.input['day']).format('DD.MM.YYYY')}</p>
                 {/if}

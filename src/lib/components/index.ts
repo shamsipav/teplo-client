@@ -1,4 +1,5 @@
 import Header from './Header.svelte'
+import Chart from './Chart.svelte'
 import Form from './Form.svelte'
 import Toast from './Toast.svelte'
 import Modal from './Modal.svelte'
@@ -9,5 +10,6 @@ export {
     Form,
     Toast,
     Modal,
-    NewForm
+    NewForm,
+    Chart
 }
