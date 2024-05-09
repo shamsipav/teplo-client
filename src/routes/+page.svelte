@@ -42,7 +42,7 @@
         <a href="{API_URL.slice(0,-3)}swagger" class="d-block mt-3" target="_blank" >Документация TeploAPI в Swagger</a>
     </div>
     <div class="text-center">
-        <img src="/img/structure.svg" height="180px" alt="structure">
+        <img src="/img/structure-color.svg" height="180px" alt="structure">
     </div>
     <div class="text-center pt-5">
         <p class="lead mb-2">Магистерская диссертация студента группы НМТМ-223901, Шамсимухаметова Павла Раифовича</p>
