@@ -2,6 +2,7 @@
      import { onMount } from 'svelte'
      import 'intro.js/introjs.css'
      import introJs from 'intro.js'
+    import { API_URL } from '$lib/consts';
      
      onMount(() => {
          const intro = introJs()
@@ -38,6 +39,10 @@
     <h1 class="h1 text-center mb-5" data-intro='Hello step one!'>Информационно-моделирующая система<br/> теплового режима доменной плавки</h1>
     <div class="text-center mb-5">
         <a href="/base" class="btn btn-outline-secondary">Перейти к базовому режиму</a>
+        <a href="{API_URL.slice(0,-3)}swagger" class="d-block mt-3" target="_blank" >Документация TeploAPI в Swagger</a>
+    </div>
+    <div class="text-center">
+        <img src="/img/structure.svg" height="180px" alt="structure">
     </div>
     <div class="text-center pt-5">
         <p class="lead mb-2">Магистерская диссертация студента группы НМТМ-223901, Шамсимухаметова Павла Раифовича</p>
