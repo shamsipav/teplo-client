@@ -1,7 +1,7 @@
 <script lang="ts">
-     import { onMount } from 'svelte'
-     import 'intro.js/introjs.css'
-     import introJs from 'intro.js'
+    import { onMount } from 'svelte'
+    import 'intro.js/introjs.css'
+    import introJs from 'intro.js'
     import { API_URL } from '$lib/consts';
      
      onMount(() => {

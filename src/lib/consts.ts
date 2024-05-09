@@ -1,4 +1,7 @@
-export const API_URL = 'http://localhost:5401/api'
+// @ts-ignore
+import { PUBLIC_API_URL } from '$env/static/public'
+
+export const API_URL = PUBLIC_API_URL
 
 export const FURNACE_FIELDS =
 [
